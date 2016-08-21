@@ -3,10 +3,8 @@
 
 enum GameState
 {
-    GS_SPLASH,
-    GS_MENU,
-    GS_GAME,
-    GS_PAUSE,
+    GS_RUNNING,
+    GS_PAUSED,
     GS_FINISHED
 };
 

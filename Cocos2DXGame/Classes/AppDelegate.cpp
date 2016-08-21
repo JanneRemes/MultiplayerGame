@@ -1,6 +1,5 @@
 #include "AppDelegate.h"
-#include "SplashScreenScene.h"
-#include "GameApp.h"
+#include "MenuScreenScene.h"
 
 USING_NS_CC;
 
@@ -76,7 +75,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // create a scene. it's an autorelease object
-    auto scene = GameApp::createScene();
+    auto scene = MenuScreen::createScene();
 
     // run
     director->runWithScene(scene);

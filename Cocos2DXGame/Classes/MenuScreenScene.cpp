@@ -1,81 +1,159 @@
 #include "MenuScreenScene.h"
-#include "SimpleAudioEngine.h"
+#include "GameScene.h"
 
 USING_NS_CC;
 
+MenuScreen::MenuScreen():
+m_menuLabel(),
+m_localButton(),
+m_onlineButton(),
+m_exitButton(),
+m_isButtonHighlighted(false)
+{
+}
+
 Scene* MenuScreen::createScene()
 {
-    // 'scene' is an autorelease object
     auto scene = Scene::create();
-
-    // 'layer' is an autorelease object
+    if (scene)
+        CCLOG("Scene creation succesful!");
     auto layer = MenuScreen::create();
-
-    // add layer as a child to scene
+    if (layer)
+        CCLOG("Layer creation succesful!");
     scene->addChild(layer);
 
-    // return the scene
     return scene;
 }
 
 // on "init" you need to initialize your instance
 bool MenuScreen::init()
 {
-    //////////////////////////////
-    // 1. super init first
     if (!Layer::init())
     {
         return false;
     }
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    m_menuLabel = cocos2d::Label::createWithSystemFont("MAIN MENU", "Arial", 50);
+    m_menuLabel->enableBold();
+    m_menuLabel->setPosition(this->getBoundingBox().getMidX(), this->getBoundingBox().getMaxY() - 100);
+    m_menuLabel->setColor(Color3B::GREEN);
+    this->addChild(m_menuLabel);
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+    createMenuButtons();
+    
+    auto listener = cocos2d::EventListenerKeyboard::create();
+    listener = cocos2d::EventListenerKeyboard::create();
+    listener->onKeyReleased = CC_CALLBACK_2(MenuScreen::keyCallback, this);
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-        "CloseNormal.png",
-        "CloseSelected.png",
-        CC_CALLBACK_1(MenuScreen::menuCloseCallback, this));
-
-    closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width / 2,
-        origin.y + closeItem->getContentSize().height / 2));
-
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Lobster Ball", "fonts/Marker Felt.ttf", 24);
-
-    // position the label on the center of the screen
-    label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-        origin.y + visibleSize.height - label->getContentSize().height));
-
-    // add the label as a child to this layer
-    this->addChild(label, 1);
-
-    // add "MenuScreen" splash screen"
-    auto sprite = Sprite::create("Menu.png");
-
-    // position the sprite on the center of the screen
-    sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-
-    // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
+    this->_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     return true;
 }
 
+void MenuScreen::keyCallback(EventKeyboard::KeyCode keyCode, Event* event)
+{
+    if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW || keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW
+        || keyCode == EventKeyboard::KeyCode::KEY_W || keyCode == EventKeyboard::KeyCode::KEY_S
+        || keyCode == EventKeyboard::KeyCode::KEY_ENTER)
+    {
+        if (!m_isButtonHighlighted)
+        {
+            m_localButton->setHighlighted(true);
+            m_isButtonHighlighted = true;
+        }
+        else
+        {
+            if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW
+                || keyCode == EventKeyboard::KeyCode::KEY_S)
+            {
+                if (m_localButton->isHighlighted())
+                {
+                    m_localButton->setHighlighted(false);
+                    m_onlineButton->setHighlighted(true);
+                }
+                else if (m_onlineButton->isHighlighted())
+                {
+                    m_onlineButton->setHighlighted(false);
+                    m_exitButton->setHighlighted(true);
+                }
+            }
+            else if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW
+                || keyCode == EventKeyboard::KeyCode::KEY_W)
+            {
+                if (m_onlineButton->isHighlighted())
+                {
+                    m_onlineButton->setHighlighted(false);
+                    m_localButton->setHighlighted(true);
+                }
+                else if (m_exitButton->isHighlighted())
+                {
+                    m_exitButton->setHighlighted(false);
+                    m_onlineButton->setHighlighted(true);
+                }
+            }
+            else if (keyCode == EventKeyboard::KeyCode::KEY_ENTER)
+            {
+                if (m_localButton->isHighlighted())
+                {
+                    // Start local game
+                    CCLOG("LOCAL GAME SELECTED");
+                    auto scene = GameScene::createScene();
+
+                    Director::getInstance()->replaceScene(scene);
+                }
+                else if (m_onlineButton->isHighlighted())
+                {
+                    // Go to multiplayer menu
+                    CCLOG("ONLINE GAME SELECTED");
+                }
+                else if (m_exitButton->isHighlighted())
+                {
+                    // Close the game
+                    CCLOG("QUIT GAME SELECTED");
+                    Director::getInstance()->end();
+                }
+            }
+        }
+        CCLOG("Key with keycode %d released", keyCode);
+    }
+}
+
+void MenuScreen::createMenuButtons()
+{
+    // LOCAL GAME
+    m_localButton = ui::Button::create();
+    m_localButton->loadTextures("images/MenuButtonDefault.png", "images/MenuButtonHighlighted.png");
+    m_localButton->setPosition(Point(this->getBoundingBox().getMidX(), 
+                                     this->getBoundingBox().getMaxY() * 0.6));
+    m_localButton->setTitleText("LOCAL GAME");
+    m_localButton->setTitleFontSize(22);
+    m_localButton->setTitleColor(Color3B::WHITE);
+    m_localButton->setPressedActionEnabled(true);
+
+    // ONLINE GAME
+    m_onlineButton = ui::Button::create();
+    m_onlineButton->loadTextures("images/MenuButtonDefault.png", "images/MenuButtonHighlighted.png");
+    m_onlineButton->setPosition(Point(this->getBoundingBox().getMidX(),
+                                      this->getBoundingBox().getMaxY() * 0.4));
+    m_onlineButton->setTitleText("ONLINE GAME");
+    m_onlineButton->setTitleFontSize(22);
+    m_onlineButton->setTitleColor(Color3B::WHITE);
+    m_onlineButton->setPressedActionEnabled(true);
+
+    // QUIT GAME
+    m_exitButton = ui::Button::create();
+    m_exitButton->loadTextures("images/MenuButtonDefault.png", "images/MenuButtonHighlighted.png");
+    m_exitButton->setPosition(Point(this->getBoundingBox().getMidX(), 
+                                    this->getBoundingBox().getMaxY() * 0.2));
+    m_exitButton->setTitleText("QUIT");
+    m_exitButton->setTitleFontSize(22);
+    m_exitButton->setTitleColor(Color3B::WHITE);
+    m_exitButton->setPressedActionEnabled(true);
+
+    this->addChild(m_localButton, 0);
+    this->addChild(m_onlineButton, 0);
+    this->addChild(m_exitButton, 0);
+}
 
 void MenuScreen::menuCloseCallback(Ref* pSender)
 {

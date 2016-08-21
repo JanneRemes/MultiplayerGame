@@ -1,26 +1,27 @@
-#include "GameApp.h"
+#include "GameScene.h"
 
 USING_NS_CC;
 
-GameApp::GameApp()
+GameScene::GameScene():
+m_state()
 {
 
 }
 
-GameApp::~GameApp()
+GameScene::~GameScene()
 {
 }
 
-Scene* GameApp::createScene()
+Scene* GameScene::createScene()
 {
     auto scene = Scene::create();
-    auto layer = GameApp::create();
+    auto layer = GameScene::create();
     scene->addChild(layer);
     
     return scene;
 }
 
-bool GameApp::init()
+bool GameScene::init()
 {
     if (!Layer::init())
     {
@@ -46,7 +47,7 @@ bool GameApp::init()
     return true;
 }
 
-void GameApp::update(float delta)
+void GameScene::update(float delta)
 {
     auto position = sprite->getPosition();
     position.x -= 250 * delta;
