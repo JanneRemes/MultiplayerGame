@@ -1,5 +1,6 @@
 #include "MenuScreenScene.h"
 #include "GameScene.h"
+#include "enumerations.h"
 
 USING_NS_CC;
 
@@ -97,14 +98,15 @@ void MenuScreen::keyCallback(EventKeyboard::KeyCode keyCode, Event* event)
                 {
                     // Start local game
                     CCLOG("LOCAL GAME SELECTED");
+                    GameScene::setGameType(GameState::GT_LOCAL);
                     auto scene = GameScene::createScene();
-
                     Director::getInstance()->replaceScene(scene);
                 }
                 else if (m_onlineButton->isHighlighted())
                 {
                     // Go to multiplayer menu
                     CCLOG("ONLINE GAME SELECTED");
+                    GameScene::setGameType(GameState::GT_ONLINE);
                 }
                 else if (m_exitButton->isHighlighted())
                 {

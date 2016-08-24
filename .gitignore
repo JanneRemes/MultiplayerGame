@@ -19,6 +19,8 @@
 x64/
 x86/
 bld/
+proj.win32/Debug.win32/
+proj.win32/Release.win32/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
