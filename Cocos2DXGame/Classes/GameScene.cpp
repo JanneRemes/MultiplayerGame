@@ -1,12 +1,12 @@
 #include "GameScene.h"
 
-USING_NS_CC;
 
-GameState::Type GameScene::m_type = GameState::GT_ONLINE;
-GameState::State GameScene::m_state = GameState::GS_RUNNING;
+GameType GameScene::m_type = GT_ONLINE;
+GameState GameScene::m_state = GS_RUNNING;
 
 GameScene::GameScene():
-m_sprite()
+m_sprite(),
+m_playerManager(nullptr)
 {
 }
 
@@ -30,7 +30,7 @@ bool GameScene::init()
         return false;
     }
 
-    if (GameState::GT_LOCAL == m_type)
+    if (GT_LOCAL == m_type)
     {
         if (!initLocalGame())
         {
@@ -43,7 +43,7 @@ bool GameScene::init()
         }
     }
 
-    else if (GameState::GT_ONLINE == m_type)
+    else if (GT_ONLINE == m_type)
     {
         if (!initOnlineGame())
         {
@@ -56,16 +56,6 @@ bool GameScene::init()
         }
     }
 
-    //auto listener = cocos2d::EventListenerKeyboard::create();
-    //listener->onKeyPressed = [=](cocos2d::EventKeyboard::KeyCode code, cocos2d::Event* event)->void
-    //{
-    //    // This is where our different actions are going to be implemented
-    //    auto action = cocos2d::MoveTo::create(2, cocos2d::Vec2(0, 0));
-    //    sprite->runAction(action);
-    //};
-
-    //this->_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
     this->scheduleUpdate();
 
     return true;
@@ -74,14 +64,9 @@ bool GameScene::init()
 bool GameScene::initLocalGame()
 {
     // TODO: Player & Ball classes
-
-    m_sprite = Sprite::create("images/purple.png");
-    
-    if (!m_sprite)
-        return false;
-
-    m_sprite->setPosition(this->getBoundingBox().getMidX(), this->getBoundingBox().getMidY());
-    this->addChild(m_sprite, 0);
+    m_playerManager = new PlayerManager();
+    GameScene* scene = this;
+    m_playerManager->initLocalPlayers(scene);
 
     return true;
 }

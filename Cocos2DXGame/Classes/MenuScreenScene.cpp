@@ -98,7 +98,7 @@ void MenuScreen::keyCallback(EventKeyboard::KeyCode keyCode, Event* event)
                 {
                     // Start local game
                     CCLOG("LOCAL GAME SELECTED");
-                    GameScene::setGameType(GameState::GT_LOCAL);
+                    GameScene::setGameType(GT_LOCAL);
                     auto scene = GameScene::createScene();
                     Director::getInstance()->replaceScene(scene);
                 }
@@ -106,7 +106,7 @@ void MenuScreen::keyCallback(EventKeyboard::KeyCode keyCode, Event* event)
                 {
                     // Go to multiplayer menu
                     CCLOG("ONLINE GAME SELECTED");
-                    GameScene::setGameType(GameState::GT_ONLINE);
+                    GameScene::setGameType(GT_ONLINE);
                 }
                 else if (m_exitButton->isHighlighted())
                 {

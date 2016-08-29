@@ -4,6 +4,9 @@
 #include "cocos2d.h"
 #include "enumerations.h"
 
+#include "PlayerManager.h"
+
+USING_NS_CC;
 
 class GameScene : public cocos2d::Layer
 {
@@ -18,12 +21,12 @@ public:
 
     void update(float) override;
     
-    static void GameScene::setGameType(GameState::Type type)
+    static void GameScene::setGameType(GameType type)
     {
         m_type = type;
     }
 
-    static void GameScene::setGameState(GameState::State state)
+    static void GameScene::setGameState(GameState state)
     {
         m_state = state;
     }
@@ -31,10 +34,11 @@ public:
     CREATE_FUNC(GameScene);
 
 private:
-    cocos2d::Sprite* m_sprite;
+    Sprite* m_sprite;
+    PlayerManager* m_playerManager;
 
-    static GameState::Type m_type;
-    static GameState::State m_state;
+    static GameType m_type;
+    static GameState m_state;
 };
 
 #endif // __GAME_SCENE_H__

@@ -1,32 +1,26 @@
 #ifndef __ENUMERATIONS_H__
 #define __ENUMERATIONS_H__
 
-struct GameState
+enum GameState
 {
-    enum State
-    {
-        GS_RUNNING,
-        GS_PAUSED,
-        GS_FINISHED
-    };
-
-    enum Type
-    {
-        GT_ONLINE,
-        GT_LOCAL
-    };
+    GS_RUNNING,
+    GS_PAUSED,
+    GS_FINISHED
 };
 
-struct BallState
+enum GameType
 {
-    enum State
-    {
-        BS_IN_PLAY,
-        BS_ON_PAD
-    };
+    GT_ONLINE,
+    GT_LOCAL
 };
 
-struct PlayerState
+enum BallState
+{
+    BS_IN_PLAY,
+    BS_ON_PAD
+};
+
+enum PlayerState
 {
     // TODO enums
 };
