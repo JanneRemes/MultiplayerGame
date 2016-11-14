@@ -5,7 +5,7 @@ GameType GameScene::m_type = GT_ONLINE;
 GameState GameScene::m_state = GS_RUNNING;
 
 GameScene::GameScene():
-m_sprite(),
+m_sprite()
 m_playerManager(nullptr)
 {
 }
