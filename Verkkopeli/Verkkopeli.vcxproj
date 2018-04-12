@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EF972754-9370-4406-A2B9-AB5516367BA8}</ProjectGuid>
+    <RootNamespace>Verkkopeli</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include/;$(SolutionDir)SFML/include/</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;freetype.lib;jpeg.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include/;$(SolutionDir)SFML/include/</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-network.lib;freetype.lib;jpeg.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Include\Book\Aircraft.hpp" />
+    <ClInclude Include="..\Include\Book\Animation.hpp" />
+    <ClInclude Include="..\Include\Book\Application.hpp" />
+    <ClInclude Include="..\Include\Book\BloomEffect.hpp" />
+    <ClInclude Include="..\Include\Book\Button.hpp" />
+    <ClInclude Include="..\Include\Book\Category.hpp" />
+    <ClInclude Include="..\Include\Book\Command.hpp" />
+    <ClInclude Include="..\Include\Book\CommandQueue.hpp" />
+    <ClInclude Include="..\Include\Book\Component.hpp" />
+    <ClInclude Include="..\Include\Book\Container.hpp" />
+    <ClInclude Include="..\Include\Book\DataTables.hpp" />
+    <ClInclude Include="..\Include\Book\EmitterNode.hpp" />
+    <ClInclude Include="..\Include\Book\Entity.hpp" />
+    <ClInclude Include="..\Include\Book\Foreach.hpp" />
+    <ClInclude Include="..\Include\Book\GameOverState.hpp" />
+    <ClInclude Include="..\Include\Book\GameServer.hpp" />
+    <ClInclude Include="..\Include\Book\GameState.hpp" />
+    <ClInclude Include="..\Include\Book\KeyBinding.hpp" />
+    <ClInclude Include="..\Include\Book\Label.hpp" />
+    <ClInclude Include="..\Include\Book\MenuState.hpp" />
+    <ClInclude Include="..\Include\Book\MultiplayerGameState.hpp" />
+    <ClInclude Include="..\Include\Book\MusicPlayer.hpp" />
+    <ClInclude Include="..\Include\Book\NetworkNode.hpp" />
+    <ClInclude Include="..\Include\Book\NetworkProtocol.hpp" />
+    <ClInclude Include="..\Include\Book\Particle.hpp" />
+    <ClInclude Include="..\Include\Book\ParticleNode.hpp" />
+    <ClInclude Include="..\Include\Book\PauseState.hpp" />
+    <ClInclude Include="..\Include\Book\Pickup.hpp" />
+    <ClInclude Include="..\Include\Book\Player.hpp" />
+    <ClInclude Include="..\Include\Book\PostEffect.hpp" />
+    <ClInclude Include="..\Include\Book\Projectile.hpp" />
+    <ClInclude Include="..\Include\Book\ResourceHolder.hpp" />
+    <ClInclude Include="..\Include\Book\ResourceIdentifiers.hpp" />
+    <ClInclude Include="..\Include\Book\SceneNode.hpp" />
+    <ClInclude Include="..\Include\Book\SettingsState.hpp" />
+    <ClInclude Include="..\Include\Book\SoundNode.hpp" />
+    <ClInclude Include="..\Include\Book\SoundPlayer.hpp" />
+    <ClInclude Include="..\Include\Book\SpriteNode.hpp" />
+    <ClInclude Include="..\Include\Book\State.hpp" />
+    <ClInclude Include="..\Include\Book\StateIdentifiers.hpp" />
+    <ClInclude Include="..\Include\Book\StateStack.hpp" />
+    <ClInclude Include="..\Include\Book\TextNode.hpp" />
+    <ClInclude Include="..\Include\Book\TitleState.hpp" />
+    <ClInclude Include="..\Include\Book\Utility.hpp" />
+    <ClInclude Include="..\Include\Book\World.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Include\Book\ResourceHolder.inl" />
+    <None Include="..\Include\Book\Utility.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Aircraft.cpp" />
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BloomEffect.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandQueue.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Container.cpp" />
+    <ClCompile Include="DataTables.cpp" />
+    <ClCompile Include="EmitterNode.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
+    <ClCompile Include="GameServer.cpp" />
+    <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="KeyBinding.cpp" />
+    <ClCompile Include="Label.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="MultiplayerGameState.cpp" />
+    <ClCompile Include="MusicPlayer.cpp" />
+    <ClCompile Include="NetworkNode.cpp" />
+    <ClCompile Include="ParticleNode.cpp" />
+    <ClCompile Include="PauseState.cpp" />
+    <ClCompile Include="Pickup.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PostEffect.cpp" />
+    <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="SceneNode.cpp" />
+    <ClCompile Include="SettingsState.cpp" />
+    <ClCompile Include="SoundNode.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
+    <ClCompile Include="SpriteNode.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="StateStack.cpp" />
+    <ClCompile Include="TextNode.cpp" />
+    <ClCompile Include="TitleState.cpp" />
+    <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="World.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
