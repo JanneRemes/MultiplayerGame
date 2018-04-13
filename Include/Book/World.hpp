@@ -9,13 +9,12 @@
 #include <Book/CommandQueue.hpp>
 #include <Book/Command.hpp>
 #include <Book/Pickup.hpp>
-#include <Book/BloomEffect.hpp>
 #include <Book/SoundPlayer.hpp>
 #include <Book/NetworkProtocol.hpp>
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/View.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 
 #include <array>
 #include <queue>
@@ -116,8 +115,6 @@ class World : private sf::NonCopyable
 
 		std::vector<SpawnPoint>				mEnemySpawnPoints;
 		std::vector<Aircraft*>				mActiveEnemies;
-
-		BloomEffect							mBloomEffect;
 
 		bool								mNetworkedWorld;
 		NetworkNode*						mNetworkNode;

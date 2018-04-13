@@ -3,7 +3,6 @@
 #include <Book/Pickup.hpp>
 #include <Book/Foreach.hpp>
 #include <Book/TextNode.hpp>
-#include <Book/ParticleNode.hpp>
 #include <Book/SoundNode.hpp>
 #include <Book/NetworkNode.hpp>
 #include <Book/Utility.hpp>
@@ -86,19 +85,8 @@ void World::update(sf::Time dt)
 
 void World::draw()
 {
-	if (PostEffect::isSupported())
-	{
-		mSceneTexture.clear();
-		mSceneTexture.setView(mWorldView);
-		mSceneTexture.draw(mSceneGraph);
-		mSceneTexture.display();
-		mBloomEffect.apply(mSceneTexture, mTarget);
-	}
-	else
-	{
-		mTarget.setView(mWorldView);
-		mTarget.draw(mSceneGraph);
-	}
+	mTarget.setView(mWorldView);
+	mTarget.draw(mSceneGraph);
 }
 
 CommandQueue& World::getCommandQueue()
@@ -336,14 +324,6 @@ void World::buildScene()
 	finishSprite->setPosition(0.f, -76.f);
 	mFinishSprite = finishSprite.get();
 	mSceneLayers[Background]->attachChild(std::move(finishSprite));
-
-	// Add particle node to the scene
-	std::unique_ptr<ParticleNode> smokeNode(new ParticleNode(Particle::Smoke, mTextures));
-	mSceneLayers[LowerAir]->attachChild(std::move(smokeNode));
-
-	// Add propellant particle node to the scene
-	std::unique_ptr<ParticleNode> propellantNode(new ParticleNode(Particle::Propellant, mTextures));
-	mSceneLayers[LowerAir]->attachChild(std::move(propellantNode));
 
 	// Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));

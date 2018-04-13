@@ -121,7 +121,6 @@
     <ClInclude Include="..\Include\Book\Aircraft.hpp" />
     <ClInclude Include="..\Include\Book\Animation.hpp" />
     <ClInclude Include="..\Include\Book\Application.hpp" />
-    <ClInclude Include="..\Include\Book\BloomEffect.hpp" />
     <ClInclude Include="..\Include\Book\Button.hpp" />
     <ClInclude Include="..\Include\Book\Category.hpp" />
     <ClInclude Include="..\Include\Book\Command.hpp" />
@@ -129,7 +128,6 @@
     <ClInclude Include="..\Include\Book\Component.hpp" />
     <ClInclude Include="..\Include\Book\Container.hpp" />
     <ClInclude Include="..\Include\Book\DataTables.hpp" />
-    <ClInclude Include="..\Include\Book\EmitterNode.hpp" />
     <ClInclude Include="..\Include\Book\Entity.hpp" />
     <ClInclude Include="..\Include\Book\Foreach.hpp" />
     <ClInclude Include="..\Include\Book\GameOverState.hpp" />
@@ -142,12 +140,9 @@
     <ClInclude Include="..\Include\Book\MusicPlayer.hpp" />
     <ClInclude Include="..\Include\Book\NetworkNode.hpp" />
     <ClInclude Include="..\Include\Book\NetworkProtocol.hpp" />
-    <ClInclude Include="..\Include\Book\Particle.hpp" />
-    <ClInclude Include="..\Include\Book\ParticleNode.hpp" />
     <ClInclude Include="..\Include\Book\PauseState.hpp" />
     <ClInclude Include="..\Include\Book\Pickup.hpp" />
     <ClInclude Include="..\Include\Book\Player.hpp" />
-    <ClInclude Include="..\Include\Book\PostEffect.hpp" />
     <ClInclude Include="..\Include\Book\Projectile.hpp" />
     <ClInclude Include="..\Include\Book\ResourceHolder.hpp" />
     <ClInclude Include="..\Include\Book\ResourceIdentifiers.hpp" />
@@ -172,14 +167,12 @@
     <ClCompile Include="Aircraft.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="BloomEffect.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Container.cpp" />
     <ClCompile Include="DataTables.cpp" />
-    <ClCompile Include="EmitterNode.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GameServer.cpp" />
@@ -191,11 +184,9 @@
     <ClCompile Include="MultiplayerGameState.cpp" />
     <ClCompile Include="MusicPlayer.cpp" />
     <ClCompile Include="NetworkNode.cpp" />
-    <ClCompile Include="ParticleNode.cpp" />
     <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PostEffect.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="SettingsState.cpp" />

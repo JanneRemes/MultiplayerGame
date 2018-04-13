@@ -2,7 +2,6 @@
 #include <Book/Aircraft.hpp>
 #include <Book/Projectile.hpp>
 #include <Book/Pickup.hpp>
-#include <Book/Particle.hpp>
 
 
 // For std::bind() placeholders _1, _2, ...
@@ -85,19 +84,6 @@ std::vector<PickupData> initializePickupData()
 	data[Pickup::FireRate].texture = Textures::Entities;
 	data[Pickup::FireRate].textureRect = sf::IntRect(120, 64, 40, 40);
 	data[Pickup::FireRate].action = std::bind(&Aircraft::increaseFireRate, _1);
-
-	return data;
-}
-
-std::vector<ParticleData> initializeParticleData()
-{
-	std::vector<ParticleData> data(Particle::ParticleCount);
-
-	data[Particle::Propellant].color = sf::Color(255, 255, 50);
-	data[Particle::Propellant].lifetime = sf::seconds(0.6f);
-
-	data[Particle::Smoke].color = sf::Color(50, 50, 50);
-	data[Particle::Smoke].lifetime = sf::seconds(4.f);
 
 	return data;
 }
