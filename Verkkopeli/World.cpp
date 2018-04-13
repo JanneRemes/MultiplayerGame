@@ -26,7 +26,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 , mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
 , mScrollSpeed(-50.f)
 , mScrollSpeedCompensation(1.f)
-, mPlayerAircrafts()
+, mPlayerBats()
 , mEnemySpawnPoints()
 , mActiveEnemies()
 , mNetworkedWorld(networked)
@@ -52,7 +52,7 @@ void World::update(sf::Time dt)
 	// Scroll the world, reset player velocity
 	mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);	
 
-	FOREACH(Aircraft* a, mPlayerAircrafts)
+	FOREACH(Aircraft* a, mPlayerBats)
 		a->setVelocity(0.f, 0.f);
 
 	// Setup commands to destroy entities, and guide missiles
@@ -69,8 +69,8 @@ void World::update(sf::Time dt)
 	handleCollisions();
 
 	// Remove aircrafts that were destroyed (World::removeWrecks() only destroys the entities, not the pointers in mPlayerAircraft)
-	auto firstToRemove = std::remove_if(mPlayerAircrafts.begin(), mPlayerAircrafts.end(), std::mem_fn(&Aircraft::isMarkedForRemoval));
-	mPlayerAircrafts.erase(firstToRemove, mPlayerAircrafts.end());
+	auto firstToRemove = std::remove_if(mPlayerBats.begin(), mPlayerBats.end(), std::mem_fn(&Aircraft::isMarkedForRemoval));
+	mPlayerBats.erase(firstToRemove, mPlayerBats.end());
 
 	// Remove all destroyed entities, create new ones
 	mSceneGraph.removeWrecks();
@@ -96,7 +96,7 @@ CommandQueue& World::getCommandQueue()
 
 Aircraft* World::getAircraft(int identifier) const
 {
-	FOREACH(Aircraft* a, mPlayerAircrafts)
+	FOREACH(Aircraft* a, mPlayerBats)
 	{
 		if (a->getIdentifier() == identifier)
 			return a;
@@ -111,7 +111,7 @@ void World::removeAircraft(int identifier)
 	if (aircraft)
 	{
 		aircraft->destroy();
-		mPlayerAircrafts.erase(std::find(mPlayerAircrafts.begin(), mPlayerAircrafts.end(), aircraft));
+		mPlayerBats.erase(std::find(mPlayerBats.begin(), mPlayerBats.end(), aircraft));
 	}
 }
 
@@ -121,9 +121,9 @@ Aircraft* World::addAircraft(int identifier)
 	player->setPosition(mWorldView.getCenter());
 	player->setIdentifier(identifier);
 
-	mPlayerAircrafts.push_back(player.get());
+	mPlayerBats.push_back(player.get());
 	mSceneLayers[UpperAir]->attachChild(std::move(player));
-	return mPlayerAircrafts.back();
+	return mPlayerBats.back();
 }
 
 void World::createPickup(sf::Vector2f position, Pickup::Type type)
@@ -152,7 +152,7 @@ void World::setWorldHeight(float height)
 
 bool World::hasAlivePlayer() const
 {
-	return mPlayerAircrafts.size() > 0;
+	return mPlayerBats.size() > 0;
 }
 
 bool World::hasPlayerReachedEnd() const
@@ -168,7 +168,6 @@ void World::loadTextures()
 	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
 	mTextures.load(Textures::Jungle, "Media/Textures/Jungle.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
-	mTextures.load(Textures::Particle, "Media/Textures/Particle.png");
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
 }
 
@@ -178,7 +177,7 @@ void World::adaptPlayerPosition()
 	sf::FloatRect viewBounds = getViewBounds();
 	const float borderDistance = 40.f;
 
-	FOREACH(Aircraft* aircraft, mPlayerAircrafts)
+	FOREACH(Aircraft* aircraft, mPlayerBats)
 	{
 		sf::Vector2f position = aircraft->getPosition();
 		position.x = std::max(position.x, viewBounds.left + borderDistance);
@@ -191,7 +190,7 @@ void World::adaptPlayerPosition()
 
 void World::adaptPlayerVelocity()
 {
-	FOREACH(Aircraft* aircraft, mPlayerAircrafts)
+	FOREACH(Aircraft* aircraft, mPlayerBats)
 	{
 		sf::Vector2f velocity = aircraft->getVelocity();
 
@@ -271,7 +270,7 @@ void World::updateSounds()
 	sf::Vector2f listenerPosition;
 
 	// 0 players (multiplayer mode, until server is connected) -> view center
-	if (mPlayerAircrafts.empty())
+	if (mPlayerBats.empty())
 	{
 		listenerPosition = mWorldView.getCenter();
 	}
@@ -279,10 +278,10 @@ void World::updateSounds()
 	// 1 or more players -> mean position between all aircrafts
 	else
 	{
-		FOREACH(Aircraft* aircraft, mPlayerAircrafts)
+		FOREACH(Aircraft* aircraft, mPlayerBats)
 			listenerPosition += aircraft->getWorldPosition();
 
-		listenerPosition /= static_cast<float>(mPlayerAircrafts.size());
+		listenerPosition /= static_cast<float>(mPlayerBats.size());
 	}
 
 	// Set listener's position

@@ -12,12 +12,12 @@ StateStack::StateStack(State::Context context)
 {
 }
 
-void StateStack::update(sf::Time dt)
+void StateStack::update(sf::Time deltaTime)
 {
 	// Iterate from top to bottom, stop as soon as update() returns false
 	for (auto itr = mStack.rbegin(); itr != mStack.rend(); ++itr)
 	{
-		if (!(*itr)->update(dt))
+		if (!(*itr)->update(deltaTime))
 			break;
 	}
 

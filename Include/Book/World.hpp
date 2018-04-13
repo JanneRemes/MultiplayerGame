@@ -111,7 +111,7 @@ class World : private sf::NonCopyable
 		sf::Vector2f						mSpawnPosition;
 		float								mScrollSpeed;
 		float								mScrollSpeedCompensation;
-		std::vector<Aircraft*>				mPlayerAircrafts;
+		std::vector<Aircraft*>				mPlayerBats;
 
 		std::vector<SpawnPoint>				mEnemySpawnPoints;
 		std::vector<Aircraft*>				mActiveEnemies;

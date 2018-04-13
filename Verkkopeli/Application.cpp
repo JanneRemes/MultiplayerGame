@@ -51,8 +51,8 @@ void Application::run()
 
 	while (mWindow.isOpen())
 	{
-		sf::Time dt = clock.restart();
-		timeSinceLastUpdate += dt;
+		sf::Time deltaTime = clock.restart();
+		timeSinceLastUpdate += deltaTime;
 		while (timeSinceLastUpdate > TimePerFrame)
 		{
 			timeSinceLastUpdate -= TimePerFrame;
@@ -65,7 +65,7 @@ void Application::run()
 				mWindow.close();
 		}
 
-		updateStatistics(dt);
+		updateStatistics(deltaTime);
 		render();
 	}
 }
@@ -82,9 +82,9 @@ void Application::processInput()
 	}
 }
 
-void Application::update(sf::Time dt)
+void Application::update(sf::Time deltaTime)
 {
-	mStateStack.update(dt);
+	mStateStack.update(deltaTime);
 }
 
 void Application::render()
@@ -99,9 +99,9 @@ void Application::render()
 	mWindow.display();
 }
 
-void Application::updateStatistics(sf::Time dt)
+void Application::updateStatistics(sf::Time deltaTime)
 {
-	mStatisticsUpdateTime += dt;
+	mStatisticsUpdateTime += deltaTime;
 	mStatisticsNumFrames += 1;
 	if (mStatisticsUpdateTime >= sf::seconds(1.0f))
 	{

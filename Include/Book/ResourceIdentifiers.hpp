@@ -20,7 +20,6 @@ namespace Textures
 		TitleScreen,
 		Buttons,
 		Explosion,
-		Particle,
 		FinishLine,
 	};
 }
