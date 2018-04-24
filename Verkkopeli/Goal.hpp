@@ -9,12 +9,15 @@
 class Goal : public Entity
 {
 public:
-	Goal(int id, int hp);
+	Goal(int id, int hp, int x, int y);
 
 	int playerId;
 	int playerHp;
+	int posX;
+	int posY;
 	sf::Texture textureGoal;
 	sf::Sprite spriteGoal;
+	
 };
 
 #endif
