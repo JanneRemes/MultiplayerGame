@@ -86,7 +86,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)/Include;$(SolutionDir)/SFML/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>sfml-main-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-network-d.lib;sfml-system-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;flac.lib;ogg.lib;openal.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -158,12 +162,14 @@
     <ClInclude Include="..\Include\Book\TitleState.hpp" />
     <ClInclude Include="..\Include\Book\Utility.hpp" />
     <ClInclude Include="..\Include\Book\World.hpp" />
+    <ClInclude Include="Goal.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Include\Book\ResourceHolder.inl" />
     <None Include="..\Include\Book\Utility.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="PlayerBat.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Application.cpp" />
