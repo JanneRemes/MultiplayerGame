@@ -11,6 +11,7 @@
 #include <Book/Pickup.hpp>
 #include <Book/SoundPlayer.hpp>
 #include <Book/NetworkProtocol.hpp>
+#include "../Verkkopeli/Goal.hpp"
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -69,6 +70,7 @@ class World : private sf::NonCopyable
 		void								spawnEnemies();
 		void								destroyEntitiesOutsideView();
 		void								guideMissiles();
+		void								addGoals();
 
 
 	private:
@@ -115,6 +117,8 @@ class World : private sf::NonCopyable
 
 		std::vector<SpawnPoint>				mEnemySpawnPoints;
 		std::vector<PlayerBat*>				mActiveEnemies;
+
+		std::vector<Goal>					mGoals;
 
 		bool								mNetworkedWorld;
 		NetworkNode*						mNetworkNode;

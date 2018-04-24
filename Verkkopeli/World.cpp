@@ -468,6 +468,15 @@ void World::guideMissiles()
 	mActiveEnemies.clear();
 }
 
+void World::addGoals()
+{
+	//Error
+	//Goal goal(0, 5, 100, 100);
+	//Goal goal2(1, 5, 100, 500);
+	//mGoals.push_back(goal);
+	//mGoals.push_back(goal2);
+}
+
 sf::FloatRect World::getViewBounds() const
 {
 	return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
