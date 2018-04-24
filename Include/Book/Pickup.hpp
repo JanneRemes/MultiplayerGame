@@ -16,9 +16,6 @@ class Pickup : public Entity
 		enum Type
 		{
 			HealthRefill,
-			MissileRefill,
-			FireSpread,
-			FireRate,
 			TypeCount
 		};
 

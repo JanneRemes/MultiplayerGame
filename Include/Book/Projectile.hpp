@@ -13,8 +13,6 @@ class Projectile : public Entity
 		enum Type
 		{
 			AlliedBullet,
-			EnemyBullet,
-			Missile,
 			TypeCount
 		};
 
@@ -23,13 +21,10 @@ class Projectile : public Entity
 								Projectile(Type type, const TextureHolder& textures);
 
 		void					guideTowards(sf::Vector2f position);
-		bool					isGuided() const;
 
 		virtual unsigned int	getCategory() const;
 		virtual sf::FloatRect	getBoundingRect() const;
 		float					getMaxSpeed() const;
-		int						getDamage() const;
-
 	
 	private:
 		virtual void			updateCurrent(sf::Time dt, CommandQueue& commands);

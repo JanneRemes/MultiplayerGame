@@ -18,11 +18,11 @@ class Player : private sf::NonCopyable
 	public:
 		typedef PlayerAction::Type Action;
 
-		enum MissionStatus
+		enum MatchStatus
 		{
-			MissionRunning,
-			MissionSuccess,
-			MissionFailure
+			MatchRunning,
+			MatchSuccess,
+			MatchFailure
 		};
 
 
@@ -37,8 +37,8 @@ class Player : private sf::NonCopyable
 		void					handleNetworkEvent(Action action, CommandQueue& commands);
 		void					handleNetworkRealtimeChange(Action action, bool actionEnabled);
 
-		void 					setMissionStatus(MissionStatus status);
-		MissionStatus 			getMissionStatus() const;
+		void 					setMatchStatus(MatchStatus status);
+		MatchStatus 			getMatchStatus() const;
 
 		void					disableAllRealtimeActions();
 		bool					isLocal() const;
@@ -52,7 +52,7 @@ class Player : private sf::NonCopyable
 		const KeyBinding*			mKeyBinding;
 		std::map<Action, Command>	mActionBinding;
 		std::map<Action, bool>		mActionProxies;
-		MissionStatus 				mCurrentMissionStatus;
+		MatchStatus 				mCurrentMatchStatus;
 		int							mIdentifier;
 		sf::TcpSocket*				mSocket;
 };

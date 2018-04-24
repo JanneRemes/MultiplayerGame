@@ -122,6 +122,6 @@ void Application::registerStates()
 	mStateStack.registerState<PauseState>(States::Pause);
 	mStateStack.registerState<PauseState>(States::NetworkPause, true);
 	mStateStack.registerState<SettingsState>(States::Settings);
-	mStateStack.registerState<GameOverState>(States::GameOver, "Mission Failed!");
-	mStateStack.registerState<GameOverState>(States::MissionSuccess, "Mission Successful!");
+	mStateStack.registerState<GameOverState>(States::GameOver, "Match Lost!");
+	mStateStack.registerState<GameOverState>(States::MatchSuccess, "Match Won!");
 }

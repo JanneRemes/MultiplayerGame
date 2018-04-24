@@ -11,6 +11,20 @@ std::vector<PlayerBatData> initializePlayerBatData()
 {
 	std::vector<PlayerBatData> data(PlayerBat::TypeCount);
 
+	data[PlayerBat::Player1].hitpoints = 100;
+	data[PlayerBat::Player1].speed = 200.f;
+	data[PlayerBat::Player1].fireInterval = sf::seconds(1);
+	data[PlayerBat::Player1].texture = Textures::Player1;
+	data[PlayerBat::Player1].textureRect = sf::IntRect(0, 0, 48, 64); // TODO fix shape
+	data[PlayerBat::Player1].hasRollAnimation = true;
+
+	data[PlayerBat::Player2].hitpoints = 100;
+	data[PlayerBat::Player2].speed = 200.f;
+	data[PlayerBat::Player2].fireInterval = sf::seconds(1);
+	data[PlayerBat::Player2].texture = Textures::Player2;
+	data[PlayerBat::Player2].textureRect = sf::IntRect(0, 0, 48, 64);
+	data[PlayerBat::Player2].hasRollAnimation = true;
+
 	data[PlayerBat::Eagle].hitpoints = 100;
 	data[PlayerBat::Eagle].speed = 200.f;
 	data[PlayerBat::Eagle].fireInterval = sf::seconds(1);
@@ -52,16 +66,6 @@ std::vector<ProjectileData> initializeProjectileData()
 	data[Projectile::AlliedBullet].texture = Textures::Entities;
 	data[Projectile::AlliedBullet].textureRect = sf::IntRect(175, 64, 3, 14);
 
-	data[Projectile::EnemyBullet].damage = 10;
-	data[Projectile::EnemyBullet].speed = 300.f;
-	data[Projectile::EnemyBullet].texture = Textures::Entities;
-	data[Projectile::EnemyBullet].textureRect = sf::IntRect(178, 64, 3, 14);
-
-	data[Projectile::Missile].damage = 200;
-	data[Projectile::Missile].speed = 150.f;
-	data[Projectile::Missile].texture = Textures::Entities;
-	data[Projectile::Missile].textureRect = sf::IntRect(160, 64, 15, 32);
-
 	return data;
 }
 
@@ -72,18 +76,6 @@ std::vector<PickupData> initializePickupData()
 	data[Pickup::HealthRefill].texture = Textures::Entities;
 	data[Pickup::HealthRefill].textureRect = sf::IntRect(0, 64, 40, 40);
 	data[Pickup::HealthRefill].action = [] (PlayerBat& a) { a.repair(25); };
-	
-	data[Pickup::MissileRefill].texture = Textures::Entities;
-	data[Pickup::MissileRefill].textureRect = sf::IntRect(40, 64, 40, 40);
-	data[Pickup::MissileRefill].action = std::bind(&PlayerBat::collectMissiles, _1, 3);
-	
-	data[Pickup::FireSpread].texture = Textures::Entities;
-	data[Pickup::FireSpread].textureRect = sf::IntRect(80, 64, 40, 40);
-	data[Pickup::FireSpread].action = std::bind(&PlayerBat::increaseSpread, _1);
-	
-	data[Pickup::FireRate].texture = Textures::Entities;
-	data[Pickup::FireRate].textureRect = sf::IntRect(120, 64, 40, 40);
-	data[Pickup::FireRate].action = std::bind(&PlayerBat::increaseFireRate, _1);
 
 	return data;
 }

@@ -15,7 +15,7 @@ namespace States
 		NetworkPause,
 		Settings,
 		GameOver,
-		MissionSuccess,
+		MatchSuccess,
 		HostGame,
 		JoinGame,
 	};

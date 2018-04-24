@@ -21,6 +21,8 @@ namespace Textures
 		Buttons,
 		Explosion,
 		FinishLine,
+		Player1,
+		Player2,
 	};
 }
 
@@ -62,7 +64,7 @@ namespace Music
 	enum ID
 	{
 		MenuTheme,
-		MissionTheme,
+		MatchTheme,
 	};
 }
 

@@ -7,7 +7,7 @@ MusicPlayer::MusicPlayer()
 , mVolume(100.f)
 {
 	mFilenames[Music::MenuTheme]    = "Media/Music/hungerland.wav";
-	mFilenames[Music::MissionTheme] = "Media/Music/impact.wav";
+	mFilenames[Music::MatchTheme] = "Media/Music/impact.wav";
 }
 
 void MusicPlayer::play(Music::ID theme)

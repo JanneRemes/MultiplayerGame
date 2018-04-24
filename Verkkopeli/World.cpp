@@ -117,12 +117,25 @@ void World::removePlayerBat(int identifier)
 
 PlayerBat* World::addPlayerBat(int identifier)
 {
-	std::unique_ptr<PlayerBat> player(new PlayerBat(PlayerBat::Eagle, mTextures, mFonts));
-	player->setPosition(mWorldView.getCenter());
-	player->setIdentifier(identifier);
+	if (mPlayerBats.size() == 0)
+	{
+		std::unique_ptr<PlayerBat> player(new PlayerBat(PlayerBat::Player1, mTextures, mFonts));
+		player->setPosition(mWorldView.getCenter());
+		player->setIdentifier(identifier);
 
-	mPlayerBats.push_back(player.get());
-	mSceneLayers[UpperAir]->attachChild(std::move(player));
+		mPlayerBats.push_back(player.get());
+		mSceneLayers[UpperAir]->attachChild(std::move(player));
+	}
+	else
+	{
+		std::unique_ptr<PlayerBat> player(new PlayerBat(PlayerBat::Player2, mTextures, mFonts));
+		player->setPosition(mWorldView.getCenter());
+		player->setIdentifier(identifier);
+
+		mPlayerBats.push_back(player.get());
+		mSceneLayers[UpperAir]->attachChild(std::move(player));
+	}
+
 	return mPlayerBats.back();
 }
 
@@ -169,6 +182,8 @@ void World::loadTextures()
 	mTextures.load(Textures::Jungle, "Media/Textures/Jungle.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
+	mTextures.load(Textures::Player1, "Media/Textures/player1.png");
+	mTextures.load(Textures::Player2, "Media/Textures/player2.png");
 }
 
 void World::adaptPlayerPosition()
@@ -250,17 +265,6 @@ void World::handleCollisions()
 			pickup.apply(player);
 			pickup.destroy();
 			player.playLocalSound(mCommandQueue, SoundEffect::CollectPickup);
-		}
-
-		else if (matchesCategories(pair, Category::EnemyBat, Category::AlliedProjectile)
-			  || matchesCategories(pair, Category::PlayerBat, Category::EnemyProjectile))
-		{
-			auto& playerBat = static_cast<PlayerBat&>(*pair.first);
-			auto& projectile = static_cast<Projectile&>(*pair.second);
-
-			// Apply projectile damage to PlayerBat, destroy projectile
-			playerBat.damage(projectile.getDamage());
-			projectile.destroy();
 		}
 	}
 }
@@ -439,10 +443,6 @@ void World::guideMissiles()
 	missileGuider.category = Category::AlliedProjectile;
 	missileGuider.action = derivedAction<Projectile>([this] (Projectile& missile, sf::Time)
 	{
-		// Ignore unguided bullets
-		if (!missile.isGuided())
-			return;
-
 		float minDistance = std::numeric_limits<float>::max();
 		PlayerBat* closestEnemy = nullptr;
 

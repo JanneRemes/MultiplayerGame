@@ -34,7 +34,7 @@ struct PlayerBatMover
 
 Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding)
 : mKeyBinding(binding)
-, mCurrentMissionStatus(MissionRunning)
+, mCurrentMatchStatus(MatchRunning)
 , mIdentifier(identifier)
 , mSocket(socket)
 {
@@ -143,14 +143,14 @@ void Player::handleNetworkRealtimeChange(Action action, bool actionEnabled)
 	mActionProxies[action] = actionEnabled;
 }
 
-void Player::setMissionStatus(MissionStatus status)
+void Player::setMatchStatus(MatchStatus status)
 {
-	mCurrentMissionStatus = status;
+	mCurrentMatchStatus = status;
 }
 
-Player::MissionStatus Player::getMissionStatus() const
+Player::MatchStatus Player::getMatchStatus() const
 {
-	return mCurrentMissionStatus;
+	return mCurrentMatchStatus;
 }
 
 void Player::initializeActions()

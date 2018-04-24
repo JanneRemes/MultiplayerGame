@@ -82,7 +82,7 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	mSocket.setBlocking(false);
 
 	// Play game theme
-	context.music->play(Music::MissionTheme);
+	context.music->play(Music::MatchTheme);
 }
 
 void MultiplayerGameState::draw()
@@ -224,7 +224,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 			FOREACH(sf::Int32 identifier, mLocalPlayerIdentifiers)
 			{			
 				if (PlayerBat* PlayerBat = mWorld.getPlayerBat(identifier))
-					positionUpdatePacket << identifier << PlayerBat->getPosition().x << PlayerBat->getPosition().y << static_cast<sf::Int32>(PlayerBat->getHitpoints()) << static_cast<sf::Int32>(PlayerBat->getMissileAmmo());
+					positionUpdatePacket << identifier << PlayerBat->getPosition().x << PlayerBat->getPosition().y << static_cast<sf::Int32>(PlayerBat->getHitpoints());
 			}
 
 			mSocket.send(positionUpdatePacket);
@@ -387,14 +387,12 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			{
 				sf::Int32 PlayerBatIdentifier;
 				sf::Int32 hitpoints;
-				sf::Int32 missileAmmo;
 				sf::Vector2f PlayerBatPosition;
-				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y >> hitpoints >> missileAmmo;
+				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y >> hitpoints;
 
 				PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 				PlayerBat->setPosition(PlayerBatPosition);
 				PlayerBat->setHitpoints(hitpoints);
-				PlayerBat->setMissileAmmo(missileAmmo);
 
 				mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr));
 			}
@@ -451,7 +449,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		// Mission successfully completed
 		case Server::MissionSuccess:
 		{
-			requestStackPush(States::MissionSuccess);
+			requestStackPush(States::MatchSuccess);
 		} break;
 
 		// Pickup created

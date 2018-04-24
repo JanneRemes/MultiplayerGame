@@ -10,10 +10,10 @@ GameState::GameState(StateStack& stack, Context context)
 , mPlayer(nullptr, 1, context.keys1)
 {
 	mWorld.addPlayerBat(1);
-	mPlayer.setMissionStatus(Player::MissionRunning);
+	mPlayer.setMatchStatus(Player::MatchRunning);
 
 	// Play game theme
-	context.music->play(Music::MissionTheme);
+	context.music->play(Music::MatchTheme);
 }
 
 void GameState::draw()
@@ -27,13 +27,13 @@ bool GameState::update(sf::Time dt)
 
 	if (!mWorld.hasAlivePlayer())
 	{
-		mPlayer.setMissionStatus(Player::MissionFailure);
+		mPlayer.setMatchStatus(Player::MatchFailure);
 		requestStackPush(States::GameOver);
 	}
 	else if (mWorld.hasPlayerReachedEnd())
 	{
-		mPlayer.setMissionStatus(Player::MissionSuccess);
-		requestStackPush(States::MissionSuccess);
+		mPlayer.setMatchStatus(Player::MatchSuccess);
+		requestStackPush(States::MatchSuccess);
 	}
 
 	CommandQueue& commands = mWorld.getCommandQueue();
