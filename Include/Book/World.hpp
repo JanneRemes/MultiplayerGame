@@ -5,7 +5,7 @@
 #include <Book/ResourceIdentifiers.hpp>
 #include <Book/SceneNode.hpp>
 #include <Book/SpriteNode.hpp>
-#include <Book/Aircraft.hpp>
+#include <Book/PlayerBat.hpp>
 #include <Book/CommandQueue.hpp>
 #include <Book/Command.hpp>
 #include <Book/Pickup.hpp>
@@ -37,12 +37,12 @@ class World : private sf::NonCopyable
 
 		sf::FloatRect						getViewBounds() const;		
 		CommandQueue&						getCommandQueue();
-		Aircraft*							addAircraft(int identifier);
-		void								removeAircraft(int identifier);
+		PlayerBat*							addPlayerBat(int identifier);
+		void								removePlayerBat(int identifier);
 		void								setCurrentBattleFieldPosition(float lineY);
 		void								setWorldHeight(float height);
 
-		void								addEnemy(Aircraft::Type type, float relX, float relY);
+		void								addEnemy(PlayerBat::Type type, float relX, float relY);
 		void								sortEnemies();
 
 		bool 								hasAlivePlayer() const;
@@ -50,7 +50,7 @@ class World : private sf::NonCopyable
 
 		void								setWorldScrollCompensation(float compensation);
 
-		Aircraft*							getAircraft(int identifier) const;
+		PlayerBat*							getPlayerBat(int identifier) const;
 		sf::FloatRect						getBattlefieldBounds() const;
 
 		void								createPickup(sf::Vector2f position, Pickup::Type type);
@@ -82,14 +82,14 @@ class World : private sf::NonCopyable
 
 		struct SpawnPoint 
 		{
-			SpawnPoint(Aircraft::Type type, float x, float y)
+			SpawnPoint(PlayerBat::Type type, float x, float y)
 			: type(type)
 			, x(x)
 			, y(y)
 			{
 			}
 
-			Aircraft::Type type;
+			PlayerBat::Type type;
 			float x;
 			float y;
 		};
@@ -111,10 +111,10 @@ class World : private sf::NonCopyable
 		sf::Vector2f						mSpawnPosition;
 		float								mScrollSpeed;
 		float								mScrollSpeedCompensation;
-		std::vector<Aircraft*>				mPlayerBats;
+		std::vector<PlayerBat*>				mPlayerBats;
 
 		std::vector<SpawnPoint>				mEnemySpawnPoints;
-		std::vector<Aircraft*>				mActiveEnemies;
+		std::vector<PlayerBat*>				mActiveEnemies;
 
 		bool								mNetworkedWorld;
 		NetworkNode*						mNetworkNode;

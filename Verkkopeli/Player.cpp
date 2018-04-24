@@ -1,6 +1,6 @@
 #include <Book/Player.hpp>
 #include <Book/CommandQueue.hpp>
-#include <Book/Aircraft.hpp>
+#include <Book/PlayerBat.hpp>
 #include <Book/Foreach.hpp>
 #include <Book/NetworkProtocol.hpp>
 
@@ -13,54 +13,22 @@
 
 using namespace std::placeholders;
 
-struct AircraftMover
+struct PlayerBatMover
 {
-	AircraftMover(float vx, float vy, int identifier)
+	PlayerBatMover(float vx, float vy, int identifier)
 	: velocity(vx, vy)
-	, aircraftID(identifier)
+	, playerBatID(identifier)
 	{
 	}
 
-	void operator() (Aircraft& aircraft, sf::Time) const
+	void operator() (PlayerBat& playerBat, sf::Time) const
 	{
-		if (aircraft.getIdentifier() == aircraftID)
-			aircraft.accelerate(velocity * aircraft.getMaxSpeed());
+		if (playerBat.getIdentifier() == playerBatID)
+			playerBat.accelerate(velocity * playerBat.getMaxSpeed());
 	}
 
 	sf::Vector2f velocity;
-	int aircraftID;
-};
-
-struct AircraftFireTrigger
-{
-	AircraftFireTrigger(int identifier)
-	: aircraftID(identifier)
-	{
-	}
-
-	void operator() (Aircraft& aircraft, sf::Time) const
-	{
-		if (aircraft.getIdentifier() == aircraftID)
-			aircraft.fire();
-	}
-
-	int aircraftID;
-};
-
-struct AircraftMissileTrigger
-{
-	AircraftMissileTrigger(int identifier)
-	: aircraftID(identifier)
-	{
-	}
-
-	void operator() (Aircraft& aircraft, sf::Time) const
-	{
-		if (aircraft.getIdentifier() == aircraftID)
-			aircraft.launchMissile();
-	}
-
-	int aircraftID;
+	int playerBatID;
 };
 
 
@@ -75,7 +43,7 @@ Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* bi
 
 	// Assign all categories to player's aircraft
 	FOREACH(auto& pair, mActionBinding)
-		pair.second.category = Category::PlayerAircraft;
+		pair.second.category = Category::PlayerBat;
 }
 
 void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
@@ -187,10 +155,8 @@ Player::MissionStatus Player::getMissionStatus() const
 
 void Player::initializeActions()
 {
-	mActionBinding[PlayerAction::MoveLeft].action      = derivedAction<Aircraft>(AircraftMover(-1,  0, mIdentifier));	
-	mActionBinding[PlayerAction::MoveRight].action     = derivedAction<Aircraft>(AircraftMover(+1,  0, mIdentifier));
-	mActionBinding[PlayerAction::MoveUp].action        = derivedAction<Aircraft>(AircraftMover( 0, -1, mIdentifier));
-	mActionBinding[PlayerAction::MoveDown].action      = derivedAction<Aircraft>(AircraftMover( 0, +1, mIdentifier));
-	mActionBinding[PlayerAction::Fire].action          = derivedAction<Aircraft>(AircraftFireTrigger(mIdentifier));
-	mActionBinding[PlayerAction::LaunchMissile].action = derivedAction<Aircraft>(AircraftMissileTrigger(mIdentifier));
+	mActionBinding[PlayerAction::MoveLeft].action      = derivedAction<PlayerBat>(PlayerBatMover(-1,  0, mIdentifier));
+	mActionBinding[PlayerAction::MoveRight].action     = derivedAction<PlayerBat>(PlayerBatMover(+1,  0, mIdentifier));
+	mActionBinding[PlayerAction::MoveUp].action        = derivedAction<PlayerBat>(PlayerBatMover( 0, -1, mIdentifier));
+	mActionBinding[PlayerAction::MoveDown].action      = derivedAction<PlayerBat>(PlayerBatMover( 0, +1, mIdentifier));
 }

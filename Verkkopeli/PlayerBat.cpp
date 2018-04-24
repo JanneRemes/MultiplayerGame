@@ -1,4 +1,4 @@
-#include <Book/Aircraft.hpp>
+#include <Book/PlayerBat.hpp>
 #include <Book/DataTables.hpp>
 #include <Book/Utility.hpp>
 #include <Book/Pickup.hpp>
@@ -17,10 +17,10 @@ using namespace std::placeholders;
 
 namespace
 {
-	const std::vector<AircraftData> Table = initializeAircraftData();
+	const std::vector<PlayerBatData> Table = initializePlayerBatData();
 }
 
-Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& fonts)
+PlayerBat::PlayerBat(Type type, const TextureHolder& textures, const FontHolder& fonts)
 : Entity(Table[type].hitpoints)
 , mType(type)
 , mSprite(textures.get(Table[type].texture), Table[type].textureRect)
@@ -72,7 +72,7 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	mHealthDisplay = healthDisplay.get();
 	attachChild(std::move(healthDisplay));
 
-	if (getCategory() == Category::PlayerAircraft)
+	if (getCategory() == Category::PlayerBat)
 	{
 		std::unique_ptr<TextNode> missileDisplay(new TextNode(fonts, ""));
 		missileDisplay->setPosition(0, 70);
@@ -83,17 +83,17 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	updateTexts();
 }
 
-int Aircraft::getMissileAmmo() const
+int PlayerBat::getMissileAmmo() const
 {
 	return mMissileAmmo;
 }
 
-void Aircraft::setMissileAmmo(int ammo)
+void PlayerBat::setMissileAmmo(int ammo)
 {
 	mMissileAmmo = ammo;
 }
 
-void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
+void PlayerBat::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	if (isDestroyed() && mShowExplosion)
 		target.draw(mExplosion, states);
@@ -101,12 +101,12 @@ void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
 		target.draw(mSprite, states);
 }
 
-void Aircraft::disablePickups()
+void PlayerBat::disablePickups()
 {
 	mPickupsEnabled = false;
 }
 
-void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
+void PlayerBat::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	// Update texts and roll animation
 	updateTexts();
@@ -153,65 +153,65 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	Entity::updateCurrent(dt, commands);
 }
 
-unsigned int Aircraft::getCategory() const
+unsigned int PlayerBat::getCategory() const
 {
 	if (isAllied())
-		return Category::PlayerAircraft;
+		return Category::PlayerBat;
 	else
-		return Category::EnemyAircraft;
+		return Category::EnemyBat;
 }
 
-sf::FloatRect Aircraft::getBoundingRect() const
+sf::FloatRect PlayerBat::getBoundingRect() const
 {
 	return getWorldTransform().transformRect(mSprite.getGlobalBounds());
 }
 
-bool Aircraft::isMarkedForRemoval() const
+bool PlayerBat::isMarkedForRemoval() const
 {
 	return isDestroyed() && (mExplosion.isFinished() || !mShowExplosion);
 }
 
-void Aircraft::remove()
+void PlayerBat::remove()
 {
 	Entity::remove();
 	mShowExplosion = false;
 }
 
-bool Aircraft::isAllied() const
+bool PlayerBat::isAllied() const
 {
 	return mType == Eagle;
 }
 
-float Aircraft::getMaxSpeed() const
+float PlayerBat::getMaxSpeed() const
 {
 	return Table[mType].speed;
 }
 
-void Aircraft::increaseFireRate()
+void PlayerBat::increaseFireRate()
 {
 	if (mFireRateLevel < 10)
 		++mFireRateLevel;
 }
 
-void Aircraft::increaseSpread()
+void PlayerBat::increaseSpread()
 {
 	if (mSpreadLevel < 3)
 		++mSpreadLevel;
 }
 
-void Aircraft::collectMissiles(unsigned int count)
+void PlayerBat::collectMissiles(unsigned int count)
 {
 	mMissileAmmo += count;
 }
 
-void Aircraft::fire()
+void PlayerBat::fire()
 {
 	// Only ships with fire interval != 0 are able to fire
 	if (Table[mType].fireInterval != sf::Time::Zero)
 		mIsFiring = true;
 }
 
-void Aircraft::launchMissile()
+void PlayerBat::launchMissile()
 {
 	if (mMissileAmmo > 0)
 	{
@@ -220,7 +220,7 @@ void Aircraft::launchMissile()
 	}
 }
 
-void Aircraft::playLocalSound(CommandQueue& commands, SoundEffect::ID effect)
+void PlayerBat::playLocalSound(CommandQueue& commands, SoundEffect::ID effect)
 {
 	sf::Vector2f worldPosition = getWorldPosition();
 
@@ -235,17 +235,17 @@ void Aircraft::playLocalSound(CommandQueue& commands, SoundEffect::ID effect)
 	commands.push(command);
 }
 
-int	Aircraft::getIdentifier()
+int	PlayerBat::getIdentifier()
 {
 	return mIdentifier;
 }
 
-void Aircraft::setIdentifier(int identifier)
+void PlayerBat::setIdentifier(int identifier)
 {
 	mIdentifier = identifier;
 }
 
-void Aircraft::updateMovementPattern(sf::Time dt)
+void PlayerBat::updateMovementPattern(sf::Time dt)
 {
 	// Enemy airplane: Movement pattern
 	const std::vector<Direction>& directions = Table[mType].directions;
@@ -269,7 +269,7 @@ void Aircraft::updateMovementPattern(sf::Time dt)
 	}
 }
 
-void Aircraft::checkPickupDrop(CommandQueue& commands)
+void PlayerBat::checkPickupDrop(CommandQueue& commands)
 {
 	// Drop pickup, if enemy airplane, with probability 1/3, if pickup not yet dropped
 	// and if not in network mode (where pickups are dropped via packets)
@@ -279,7 +279,7 @@ void Aircraft::checkPickupDrop(CommandQueue& commands)
 	mSpawnedPickup = true;
 }
 
-void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
+void PlayerBat::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 {
 	// Enemies try to fire all the time
 	if (!isAllied())
@@ -312,7 +312,7 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 	}
 }
 
-void Aircraft::createBullets(SceneNode& node, const TextureHolder& textures) const
+void PlayerBat::createBullets(SceneNode& node, const TextureHolder& textures) const
 {
 	Projectile::Type type = isAllied() ? Projectile::AlliedBullet : Projectile::EnemyBullet;
 
@@ -335,7 +335,7 @@ void Aircraft::createBullets(SceneNode& node, const TextureHolder& textures) con
 	}
 }
 
-void Aircraft::createProjectile(SceneNode& node, Projectile::Type type, float xOffset, float yOffset, const TextureHolder& textures) const
+void PlayerBat::createProjectile(SceneNode& node, Projectile::Type type, float xOffset, float yOffset, const TextureHolder& textures) const
 {
 	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
 
@@ -348,7 +348,7 @@ void Aircraft::createProjectile(SceneNode& node, Projectile::Type type, float xO
 	node.attachChild(std::move(projectile));
 }
 
-void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) const
+void PlayerBat::createPickup(SceneNode& node, const TextureHolder& textures) const
 {
 	auto type = static_cast<Pickup::Type>(randomInt(Pickup::TypeCount));
 
@@ -358,7 +358,7 @@ void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) cons
 	node.attachChild(std::move(pickup));
 }
 
-void Aircraft::updateTexts()
+void PlayerBat::updateTexts()
 {
 	// Display hitpoints
 	if (isDestroyed())
@@ -378,7 +378,7 @@ void Aircraft::updateTexts()
 	}
 }
 
-void Aircraft::updateRollAnimation()
+void PlayerBat::updateRollAnimation()
 {
 	if (Table[mType].hasRollAnimation)
 	{

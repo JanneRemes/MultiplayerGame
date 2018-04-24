@@ -52,7 +52,7 @@ void World::update(sf::Time dt)
 	// Scroll the world, reset player velocity
 	mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);	
 
-	FOREACH(Aircraft* a, mPlayerBats)
+	FOREACH(PlayerBat* a, mPlayerBats)
 		a->setVelocity(0.f, 0.f);
 
 	// Setup commands to destroy entities, and guide missiles
@@ -68,8 +68,8 @@ void World::update(sf::Time dt)
 	// Collision detection and response (may destroy entities)
 	handleCollisions();
 
-	// Remove aircrafts that were destroyed (World::removeWrecks() only destroys the entities, not the pointers in mPlayerAircraft)
-	auto firstToRemove = std::remove_if(mPlayerBats.begin(), mPlayerBats.end(), std::mem_fn(&Aircraft::isMarkedForRemoval));
+	// Remove PlayerBats that were destroyed (World::removeWrecks() only destroys the entities, not the pointers in mPlayerBat)
+	auto firstToRemove = std::remove_if(mPlayerBats.begin(), mPlayerBats.end(), std::mem_fn(&PlayerBat::isMarkedForRemoval));
 	mPlayerBats.erase(firstToRemove, mPlayerBats.end());
 
 	// Remove all destroyed entities, create new ones
@@ -94,9 +94,9 @@ CommandQueue& World::getCommandQueue()
 	return mCommandQueue;
 }
 
-Aircraft* World::getAircraft(int identifier) const
+PlayerBat* World::getPlayerBat(int identifier) const
 {
-	FOREACH(Aircraft* a, mPlayerBats)
+	FOREACH(PlayerBat* a, mPlayerBats)
 	{
 		if (a->getIdentifier() == identifier)
 			return a;
@@ -105,19 +105,19 @@ Aircraft* World::getAircraft(int identifier) const
 	return nullptr;
 }
 
-void World::removeAircraft(int identifier)
+void World::removePlayerBat(int identifier)
 {
-	Aircraft* aircraft = getAircraft(identifier);
-	if (aircraft)
+	PlayerBat* PlayerBat = getPlayerBat(identifier);
+	if (PlayerBat)
 	{
-		aircraft->destroy();
-		mPlayerBats.erase(std::find(mPlayerBats.begin(), mPlayerBats.end(), aircraft));
+		PlayerBat->destroy();
+		mPlayerBats.erase(std::find(mPlayerBats.begin(), mPlayerBats.end(), PlayerBat));
 	}
 }
 
-Aircraft* World::addAircraft(int identifier)
+PlayerBat* World::addPlayerBat(int identifier)
 {
-	std::unique_ptr<Aircraft> player(new Aircraft(Aircraft::Eagle, mTextures, mFonts));
+	std::unique_ptr<PlayerBat> player(new PlayerBat(PlayerBat::Eagle, mTextures, mFonts));
 	player->setPosition(mWorldView.getCenter());
 	player->setIdentifier(identifier);
 
@@ -157,8 +157,8 @@ bool World::hasAlivePlayer() const
 
 bool World::hasPlayerReachedEnd() const
 {
-	if (Aircraft* aircraft = getAircraft(1))
-		return !mWorldBounds.contains(aircraft->getPosition());
+	if (PlayerBat* PlayerBat = getPlayerBat(1))
+		return !mWorldBounds.contains(PlayerBat->getPosition());
 	else 
 		return false;
 }
@@ -177,29 +177,29 @@ void World::adaptPlayerPosition()
 	sf::FloatRect viewBounds = getViewBounds();
 	const float borderDistance = 40.f;
 
-	FOREACH(Aircraft* aircraft, mPlayerBats)
+	FOREACH(PlayerBat* PlayerBat, mPlayerBats)
 	{
-		sf::Vector2f position = aircraft->getPosition();
+		sf::Vector2f position = PlayerBat->getPosition();
 		position.x = std::max(position.x, viewBounds.left + borderDistance);
 		position.x = std::min(position.x, viewBounds.left + viewBounds.width - borderDistance);
 		position.y = std::max(position.y, viewBounds.top + borderDistance);
 		position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
-		aircraft->setPosition(position);
+		PlayerBat->setPosition(position);
 	}
 }
 
 void World::adaptPlayerVelocity()
 {
-	FOREACH(Aircraft* aircraft, mPlayerBats)
+	FOREACH(PlayerBat* PlayerBat, mPlayerBats)
 	{
-		sf::Vector2f velocity = aircraft->getVelocity();
+		sf::Vector2f velocity = PlayerBat->getVelocity();
 
 		// If moving diagonally, reduce velocity (to have always same velocity)
 		if (velocity.x != 0.f && velocity.y != 0.f)
-			aircraft->setVelocity(velocity / std::sqrt(2.f));
+			PlayerBat->setVelocity(velocity / std::sqrt(2.f));
 
 		// Add scrolling velocity
-		aircraft->accelerate(0.f, mScrollSpeed);
+		PlayerBat->accelerate(0.f, mScrollSpeed);
 	}
 }
 
@@ -231,19 +231,19 @@ void World::handleCollisions()
 
 	FOREACH(SceneNode::Pair pair, collisionPairs)
 	{
-		if (matchesCategories(pair, Category::PlayerAircraft, Category::EnemyAircraft))
+		if (matchesCategories(pair, Category::PlayerBat, Category::EnemyBat))
 		{
-			auto& player = static_cast<Aircraft&>(*pair.first);
-			auto& enemy = static_cast<Aircraft&>(*pair.second);
+			auto& player = static_cast<PlayerBat&>(*pair.first);
+			auto& enemy = static_cast<PlayerBat&>(*pair.second);
 
 			// Collision: Player damage = enemy's remaining HP
 			player.damage(enemy.getHitpoints());
 			enemy.destroy();
 		}
 
-		else if (matchesCategories(pair, Category::PlayerAircraft, Category::Pickup))
+		else if (matchesCategories(pair, Category::PlayerBat, Category::Pickup))
 		{
-			auto& player = static_cast<Aircraft&>(*pair.first);
+			auto& player = static_cast<PlayerBat&>(*pair.first);
 			auto& pickup = static_cast<Pickup&>(*pair.second);
 
 			// Apply pickup effect to player, destroy projectile
@@ -252,14 +252,14 @@ void World::handleCollisions()
 			player.playLocalSound(mCommandQueue, SoundEffect::CollectPickup);
 		}
 
-		else if (matchesCategories(pair, Category::EnemyAircraft, Category::AlliedProjectile)
-			  || matchesCategories(pair, Category::PlayerAircraft, Category::EnemyProjectile))
+		else if (matchesCategories(pair, Category::EnemyBat, Category::AlliedProjectile)
+			  || matchesCategories(pair, Category::PlayerBat, Category::EnemyProjectile))
 		{
-			auto& aircraft = static_cast<Aircraft&>(*pair.first);
+			auto& playerBat = static_cast<PlayerBat&>(*pair.first);
 			auto& projectile = static_cast<Projectile&>(*pair.second);
 
-			// Apply projectile damage to aircraft, destroy projectile
-			aircraft.damage(projectile.getDamage());
+			// Apply projectile damage to PlayerBat, destroy projectile
+			playerBat.damage(projectile.getDamage());
 			projectile.destroy();
 		}
 	}
@@ -275,11 +275,11 @@ void World::updateSounds()
 		listenerPosition = mWorldView.getCenter();
 	}
 
-	// 1 or more players -> mean position between all aircrafts
+	// 1 or more players -> mean position between all PlayerBats
 	else
 	{
-		FOREACH(Aircraft* aircraft, mPlayerBats)
-			listenerPosition += aircraft->getWorldPosition();
+		FOREACH(PlayerBat* PlayerBat, mPlayerBats)
+			listenerPosition += PlayerBat->getWorldPosition();
 
 		listenerPosition /= static_cast<float>(mPlayerBats.size());
 	}
@@ -336,7 +336,7 @@ void World::buildScene()
 		mSceneGraph.attachChild(std::move(networkNode));
 	}
 
-	// Add enemy aircraft
+	// Add enemy PlayerBat
 	addEnemies();
 }
 
@@ -346,31 +346,31 @@ void World::addEnemies()
 		return;
 
 	// Add enemies to the spawn point container
-	addEnemy(Aircraft::Raptor,    0.f,  500.f);
-	addEnemy(Aircraft::Raptor,    0.f, 1000.f);
-	addEnemy(Aircraft::Raptor, +100.f, 1150.f);
-	addEnemy(Aircraft::Raptor, -100.f, 1150.f);
-	addEnemy(Aircraft::Avenger,  70.f, 1500.f);
-	addEnemy(Aircraft::Avenger, -70.f, 1500.f);
-	addEnemy(Aircraft::Avenger, -70.f, 1710.f);
-	addEnemy(Aircraft::Avenger,  70.f, 1700.f);
-	addEnemy(Aircraft::Avenger,  30.f, 1850.f);
-	addEnemy(Aircraft::Raptor,  300.f, 2200.f);
-	addEnemy(Aircraft::Raptor, -300.f, 2200.f);
-	addEnemy(Aircraft::Raptor,    0.f, 2200.f);
-	addEnemy(Aircraft::Raptor,    0.f, 2500.f);
-	addEnemy(Aircraft::Avenger,-300.f, 2700.f);
-	addEnemy(Aircraft::Avenger,-300.f, 2700.f);
-	addEnemy(Aircraft::Raptor,    0.f, 3000.f);
-	addEnemy(Aircraft::Raptor,  250.f, 3250.f);
-	addEnemy(Aircraft::Raptor, -250.f, 3250.f);
-	addEnemy(Aircraft::Avenger,   0.f, 3500.f);
-	addEnemy(Aircraft::Avenger,   0.f, 3700.f);
-	addEnemy(Aircraft::Raptor,    0.f, 3800.f);
-	addEnemy(Aircraft::Avenger,   0.f, 4000.f);
-	addEnemy(Aircraft::Avenger,-200.f, 4200.f);
-	addEnemy(Aircraft::Raptor,  200.f, 4200.f);
-	addEnemy(Aircraft::Raptor,    0.f, 4400.f);
+	addEnemy(PlayerBat::Raptor,    0.f,  500.f);
+	addEnemy(PlayerBat::Raptor,    0.f, 1000.f);
+	addEnemy(PlayerBat::Raptor, +100.f, 1150.f);
+	addEnemy(PlayerBat::Raptor, -100.f, 1150.f);
+	addEnemy(PlayerBat::Avenger,  70.f, 1500.f);
+	addEnemy(PlayerBat::Avenger, -70.f, 1500.f);
+	addEnemy(PlayerBat::Avenger, -70.f, 1710.f);
+	addEnemy(PlayerBat::Avenger,  70.f, 1700.f);
+	addEnemy(PlayerBat::Avenger,  30.f, 1850.f);
+	addEnemy(PlayerBat::Raptor,  300.f, 2200.f);
+	addEnemy(PlayerBat::Raptor, -300.f, 2200.f);
+	addEnemy(PlayerBat::Raptor,    0.f, 2200.f);
+	addEnemy(PlayerBat::Raptor,    0.f, 2500.f);
+	addEnemy(PlayerBat::Avenger,-300.f, 2700.f);
+	addEnemy(PlayerBat::Avenger,-300.f, 2700.f);
+	addEnemy(PlayerBat::Raptor,    0.f, 3000.f);
+	addEnemy(PlayerBat::Raptor,  250.f, 3250.f);
+	addEnemy(PlayerBat::Raptor, -250.f, 3250.f);
+	addEnemy(PlayerBat::Avenger,   0.f, 3500.f);
+	addEnemy(PlayerBat::Avenger,   0.f, 3700.f);
+	addEnemy(PlayerBat::Raptor,    0.f, 3800.f);
+	addEnemy(PlayerBat::Avenger,   0.f, 4000.f);
+	addEnemy(PlayerBat::Avenger,-200.f, 4200.f);
+	addEnemy(PlayerBat::Raptor,  200.f, 4200.f);
+	addEnemy(PlayerBat::Raptor,    0.f, 4400.f);
 
 	sortEnemies();
 }
@@ -384,7 +384,7 @@ void World::sortEnemies()
 	});
 }
 
-void World::addEnemy(Aircraft::Type type, float relX, float relY)
+void World::addEnemy(PlayerBat::Type type, float relX, float relY)
 {
 	SpawnPoint spawn(type, mSpawnPosition.x + relX, mSpawnPosition.y - relY);
 	mEnemySpawnPoints.push_back(spawn);
@@ -398,7 +398,7 @@ void World::spawnEnemies()
 	{
 		SpawnPoint spawn = mEnemySpawnPoints.back();
 		
-		std::unique_ptr<Aircraft> enemy(new Aircraft(spawn.type, mTextures, mFonts));
+		std::unique_ptr<PlayerBat> enemy(new PlayerBat(spawn.type, mTextures, mFonts));
 		enemy->setPosition(spawn.x, spawn.y);
 		enemy->setRotation(180.f);
 		if (mNetworkedWorld) enemy->disablePickups();
@@ -413,7 +413,7 @@ void World::spawnEnemies()
 void World::destroyEntitiesOutsideView()
 {
 	Command command;
-	command.category = Category::Projectile | Category::EnemyAircraft;
+	command.category = Category::Projectile | Category::EnemyBat;
 	command.action = derivedAction<Entity>([this] (Entity& e, sf::Time)
 	{
 		if (!getBattlefieldBounds().intersects(e.getBoundingRect()))
@@ -427,8 +427,8 @@ void World::guideMissiles()
 {
 	// Setup command that stores all enemies in mActiveEnemies
 	Command enemyCollector;
-	enemyCollector.category = Category::EnemyAircraft;
-	enemyCollector.action = derivedAction<Aircraft>([this] (Aircraft& enemy, sf::Time)
+	enemyCollector.category = Category::EnemyBat;
+	enemyCollector.action = derivedAction<PlayerBat>([this] (PlayerBat& enemy, sf::Time)
 	{
 		if (!enemy.isDestroyed())
 			mActiveEnemies.push_back(&enemy);
@@ -444,10 +444,10 @@ void World::guideMissiles()
 			return;
 
 		float minDistance = std::numeric_limits<float>::max();
-		Aircraft* closestEnemy = nullptr;
+		PlayerBat* closestEnemy = nullptr;
 
 		// Find closest enemy
-		FOREACH(Aircraft* enemy, mActiveEnemies)
+		FOREACH(PlayerBat* enemy, mActiveEnemies)
 		{
 			float enemyDistance = distance(missile, *enemy);
 

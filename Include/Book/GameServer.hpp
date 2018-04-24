@@ -33,7 +33,7 @@ class GameServer
 
 			sf::TcpSocket			socket;
 			sf::Time				lastPacketTime;
-			std::vector<sf::Int32>	aircraftIdentifiers;
+			std::vector<sf::Int32>	playerBatIdentifiers;
 			bool					ready;
 			bool					timedOut;
 		};
@@ -83,11 +83,11 @@ class GameServer
 		sf::FloatRect						mBattleFieldRect;
 		float								mBattleFieldScrollSpeed;
 
-		std::size_t							mAircraftCount;
-		std::map<sf::Int32, AircraftInfo>	mAircraftInfo;
+		std::size_t							mPlayerBatCount;
+		std::map<sf::Int32, AircraftInfo>	mPlayerBatInfo;
 
 		std::vector<PeerPtr>				mPeers;
-		sf::Int32							mAircraftIdentifierCounter;
+		sf::Int32							mPlayerBatIdentifierCounter;
 		bool								mWaitingThreadEnd;
 		
 		sf::Time							mLastSpawnTime;

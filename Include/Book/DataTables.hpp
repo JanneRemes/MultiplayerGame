@@ -11,7 +11,7 @@
 #include <functional>
 
 
-class Aircraft;
+class PlayerBat;
 
 struct Direction
 {
@@ -25,7 +25,7 @@ struct Direction
 	float distance;
 };
 
-struct AircraftData
+struct PlayerBatData
 {
 	int								hitpoints;
 	float							speed;
@@ -46,7 +46,7 @@ struct ProjectileData
 
 struct PickupData
 {
-	std::function<void(Aircraft&)>	action;
+	std::function<void(PlayerBat&)>	action;
 	Textures::ID					texture;
 	sf::IntRect						textureRect;
 };
@@ -58,7 +58,7 @@ struct ParticleData
 };
 
 
-std::vector<AircraftData>	initializeAircraftData();
+std::vector<PlayerBatData>	initializePlayerBatData();
 std::vector<ProjectileData>	initializeProjectileData();
 std::vector<PickupData>		initializePickupData();
 std::vector<ParticleData>	initializeParticleData();

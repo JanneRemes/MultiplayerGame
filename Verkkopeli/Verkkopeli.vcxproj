@@ -118,7 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\Book\Aircraft.hpp" />
+    <ClInclude Include="..\Include\Book\PlayerBat.hpp" />
     <ClInclude Include="..\Include\Book\Animation.hpp" />
     <ClInclude Include="..\Include\Book\Application.hpp" />
     <ClInclude Include="..\Include\Book\Button.hpp" />
@@ -164,7 +164,7 @@
     <None Include="..\Include\Book\Utility.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Aircraft.cpp" />
+    <ClCompile Include="PlayerBat.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Button.cpp" />

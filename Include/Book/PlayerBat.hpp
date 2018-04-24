@@ -1,5 +1,5 @@
-#ifndef BOOK_AIRCRAFT_HPP
-#define BOOK_AIRCRAFT_HPP
+#ifndef BOOK_PlayerBat_HPP
+#define BOOK_PlayerBat_HPP
 
 #include <Book/Entity.hpp>
 #include <Book/Command.hpp>
@@ -11,7 +11,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 
-class Aircraft : public Entity
+class PlayerBat : public Entity
 {
 	public:
 		enum Type
@@ -24,7 +24,7 @@ class Aircraft : public Entity
 
 
 	public:
-								Aircraft(Type type, const TextureHolder& textures, const FontHolder& fonts);
+								PlayerBat(Type type, const TextureHolder& textures, const FontHolder& fonts);
 
 		virtual unsigned int	getCategory() const;
 		virtual sf::FloatRect	getBoundingRect() const;
@@ -88,4 +88,4 @@ class Aircraft : public Entity
 	
 		int						mIdentifier;};
 
-#endif // BOOK_AIRCRAFT_HPP
+#endif // BOOK_PlayerBat_HPP
