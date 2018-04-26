@@ -16,7 +16,6 @@ KeyBinding::KeyBinding(int controlPreconfiguration)
 		mKeyMap[sf::Keyboard::Up]    = PlayerAction::MoveUp;
 		mKeyMap[sf::Keyboard::Down]  = PlayerAction::MoveDown;
 		mKeyMap[sf::Keyboard::Space] = PlayerAction::Fire;
-		mKeyMap[sf::Keyboard::M]     = PlayerAction::LaunchMissile;
 	}
 	else if (controlPreconfiguration == 2)
 	{
@@ -26,7 +25,6 @@ KeyBinding::KeyBinding(int controlPreconfiguration)
 		mKeyMap[sf::Keyboard::W] = PlayerAction::MoveUp;
 		mKeyMap[sf::Keyboard::S] = PlayerAction::MoveDown;
 		mKeyMap[sf::Keyboard::F] = PlayerAction::Fire;
-		mKeyMap[sf::Keyboard::R] = PlayerAction::LaunchMissile;
 	}
 }
 

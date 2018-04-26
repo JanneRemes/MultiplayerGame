@@ -17,8 +17,6 @@ class PlayerBat : public Entity
 		enum Type
 		{
 			Eagle,
-			Raptor,
-			Avenger,
 			Player1,
 			Player2,
 			TypeCount

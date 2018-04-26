@@ -50,7 +50,6 @@ namespace PlayerActions
 		MoveUp,
 		MoveDown,
 		Fire,
-		LaunchMissile,
 		ActionCount
 	};
 }

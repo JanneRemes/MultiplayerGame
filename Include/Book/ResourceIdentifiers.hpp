@@ -50,10 +50,8 @@ namespace SoundEffect
 	enum ID
 	{
 		AlliedGunfire,
-		EnemyGunfire,
 		Explosion1,
 		Explosion2,
-		LaunchMissile,
 		CollectPickup,
 		Button,
 	};

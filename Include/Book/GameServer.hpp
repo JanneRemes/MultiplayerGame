@@ -43,7 +43,6 @@ class GameServer
 		{
 			sf::Vector2f				position;
 			sf::Int32					hitpoints;
-			sf::Int32                   missileAmmo;
 			std::map<sf::Int32, bool>	realtimeActions;
 		};
 

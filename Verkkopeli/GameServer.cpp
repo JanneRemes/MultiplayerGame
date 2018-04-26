@@ -284,7 +284,6 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			receivingPeer.playerBatIdentifiers.push_back(mPlayerBatIdentifierCounter);
 			mPlayerBatInfo[mPlayerBatIdentifierCounter].position = sf::Vector2f(mBattleFieldRect.width / 2, mBattleFieldRect.top + mBattleFieldRect.height / 2);
 			mPlayerBatInfo[mPlayerBatIdentifierCounter].hitpoints = 100;
-			mPlayerBatInfo[mPlayerBatIdentifierCounter].missileAmmo = 2;
 
 			sf::Packet requestPacket;
 			requestPacket << static_cast<sf::Int32>(Server::AcceptCoopPartner);
@@ -320,12 +319,10 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			{
 				sf::Int32 PlayerBatIdentifier;
 				sf::Int32 PlayerBatHitpoints;
-				sf::Int32 missileAmmo;
 				sf::Vector2f PlayerBatPosition;
-				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y >> PlayerBatHitpoints >> missileAmmo;
+				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y >> PlayerBatHitpoints;
 				mPlayerBatInfo[PlayerBatIdentifier].position = PlayerBatPosition;
 				mPlayerBatInfo[PlayerBatIdentifier].hitpoints = PlayerBatHitpoints;
-				mPlayerBatInfo[PlayerBatIdentifier].missileAmmo = missileAmmo;
 			}
 		} break;
 
@@ -378,7 +375,6 @@ void GameServer::handleIncomingConnections()
 		// order the new client to spawn its own plane ( player 1 )
 		mPlayerBatInfo[mPlayerBatIdentifierCounter].position = sf::Vector2f(mBattleFieldRect.width / 2, mBattleFieldRect.top + mBattleFieldRect.height / 2);
 		mPlayerBatInfo[mPlayerBatIdentifierCounter].hitpoints = 100;
-		mPlayerBatInfo[mPlayerBatIdentifierCounter].missileAmmo = 2;
 
 		sf::Packet packet;
 		packet << static_cast<sf::Int32>(Server::SpawnSelf);
@@ -453,7 +449,7 @@ void GameServer::informWorldState(sf::TcpSocket& socket)
 		if (mPeers[i]->ready)
 		{
 			FOREACH(sf::Int32 identifier, mPeers[i]->playerBatIdentifiers)
-				packet << identifier << mPlayerBatInfo[identifier].position.x << mPlayerBatInfo[identifier].position.y << mPlayerBatInfo[identifier].hitpoints << mPlayerBatInfo[identifier].missileAmmo;
+				packet << identifier << mPlayerBatInfo[identifier].position.x << mPlayerBatInfo[identifier].position.y << mPlayerBatInfo[identifier].hitpoints;
 		}
 	}
 

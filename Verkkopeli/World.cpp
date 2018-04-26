@@ -55,9 +55,8 @@ void World::update(sf::Time dt)
 	FOREACH(PlayerBat* a, mPlayerBats)
 		a->setVelocity(0.f, 0.f);
 
-	// Setup commands to destroy entities, and guide missiles
+	// Setup commands to destroy entities
 	destroyEntitiesOutsideView();
-	guideMissiles();
 
 	// Forward commands to scene graph, adapt velocity (scrolling, diagonal correction)
 	while (!mCommandQueue.isEmpty())
@@ -72,9 +71,8 @@ void World::update(sf::Time dt)
 	auto firstToRemove = std::remove_if(mPlayerBats.begin(), mPlayerBats.end(), std::mem_fn(&PlayerBat::isMarkedForRemoval));
 	mPlayerBats.erase(firstToRemove, mPlayerBats.end());
 
-	// Remove all destroyed entities, create new ones
+	// Remove all destroyed entities
 	mSceneGraph.removeWrecks();
-	spawnEnemies();
 
 	// Regular update step, adapt position (correct if outside view)
 	mSceneGraph.update(dt, mCommandQueue);
@@ -339,79 +337,6 @@ void World::buildScene()
 		mNetworkNode = networkNode.get();
 		mSceneGraph.attachChild(std::move(networkNode));
 	}
-
-	// Add enemy PlayerBat
-	addEnemies();
-}
-
-void World::addEnemies()
-{
-	if (mNetworkedWorld)
-		return;
-
-	// Add enemies to the spawn point container
-	addEnemy(PlayerBat::Raptor,    0.f,  500.f);
-	addEnemy(PlayerBat::Raptor,    0.f, 1000.f);
-	addEnemy(PlayerBat::Raptor, +100.f, 1150.f);
-	addEnemy(PlayerBat::Raptor, -100.f, 1150.f);
-	addEnemy(PlayerBat::Avenger,  70.f, 1500.f);
-	addEnemy(PlayerBat::Avenger, -70.f, 1500.f);
-	addEnemy(PlayerBat::Avenger, -70.f, 1710.f);
-	addEnemy(PlayerBat::Avenger,  70.f, 1700.f);
-	addEnemy(PlayerBat::Avenger,  30.f, 1850.f);
-	addEnemy(PlayerBat::Raptor,  300.f, 2200.f);
-	addEnemy(PlayerBat::Raptor, -300.f, 2200.f);
-	addEnemy(PlayerBat::Raptor,    0.f, 2200.f);
-	addEnemy(PlayerBat::Raptor,    0.f, 2500.f);
-	addEnemy(PlayerBat::Avenger,-300.f, 2700.f);
-	addEnemy(PlayerBat::Avenger,-300.f, 2700.f);
-	addEnemy(PlayerBat::Raptor,    0.f, 3000.f);
-	addEnemy(PlayerBat::Raptor,  250.f, 3250.f);
-	addEnemy(PlayerBat::Raptor, -250.f, 3250.f);
-	addEnemy(PlayerBat::Avenger,   0.f, 3500.f);
-	addEnemy(PlayerBat::Avenger,   0.f, 3700.f);
-	addEnemy(PlayerBat::Raptor,    0.f, 3800.f);
-	addEnemy(PlayerBat::Avenger,   0.f, 4000.f);
-	addEnemy(PlayerBat::Avenger,-200.f, 4200.f);
-	addEnemy(PlayerBat::Raptor,  200.f, 4200.f);
-	addEnemy(PlayerBat::Raptor,    0.f, 4400.f);
-
-	sortEnemies();
-}
-
-void World::sortEnemies()
-{
-	// Sort all enemies according to their y value, such that lower enemies are checked first for spawning
-	std::sort(mEnemySpawnPoints.begin(), mEnemySpawnPoints.end(), [] (SpawnPoint lhs, SpawnPoint rhs)
-	{
-		return lhs.y < rhs.y;
-	});
-}
-
-void World::addEnemy(PlayerBat::Type type, float relX, float relY)
-{
-	SpawnPoint spawn(type, mSpawnPosition.x + relX, mSpawnPosition.y - relY);
-	mEnemySpawnPoints.push_back(spawn);
-}
-
-void World::spawnEnemies()
-{
-	// Spawn all enemies entering the view area (including distance) this frame
-	while (!mEnemySpawnPoints.empty()
-		&& mEnemySpawnPoints.back().y > getBattlefieldBounds().top)
-	{
-		SpawnPoint spawn = mEnemySpawnPoints.back();
-		
-		std::unique_ptr<PlayerBat> enemy(new PlayerBat(spawn.type, mTextures, mFonts));
-		enemy->setPosition(spawn.x, spawn.y);
-		enemy->setRotation(180.f);
-		if (mNetworkedWorld) enemy->disablePickups();
-
-		mSceneLayers[UpperAir]->attachChild(std::move(enemy));
-
-		// Enemy is spawned, remove from the list to spawn
-		mEnemySpawnPoints.pop_back();
-	}
 }
 
 void World::destroyEntitiesOutsideView()
@@ -425,47 +350,6 @@ void World::destroyEntitiesOutsideView()
 	});
 
 	mCommandQueue.push(command);
-}
-
-void World::guideMissiles()
-{
-	// Setup command that stores all enemies in mActiveEnemies
-	Command enemyCollector;
-	enemyCollector.category = Category::EnemyBat;
-	enemyCollector.action = derivedAction<PlayerBat>([this] (PlayerBat& enemy, sf::Time)
-	{
-		if (!enemy.isDestroyed())
-			mActiveEnemies.push_back(&enemy);
-	});
-
-	// Setup command that guides all missiles to the enemy which is currently closest to the player
-	Command missileGuider;
-	missileGuider.category = Category::AlliedProjectile;
-	missileGuider.action = derivedAction<Projectile>([this] (Projectile& missile, sf::Time)
-	{
-		float minDistance = std::numeric_limits<float>::max();
-		PlayerBat* closestEnemy = nullptr;
-
-		// Find closest enemy
-		FOREACH(PlayerBat* enemy, mActiveEnemies)
-		{
-			float enemyDistance = distance(missile, *enemy);
-
-			if (enemyDistance < minDistance)
-			{
-				closestEnemy = enemy;
-				minDistance = enemyDistance;
-			}
-		}
-
-		if (closestEnemy)
-			missile.guideTowards(closestEnemy->getWorldPosition());
-	});
-
-	// Push commands, reset active enemies
-	mCommandQueue.push(enemyCollector);
-	mCommandQueue.push(missileGuider);
-	mActiveEnemies.clear();
 }
 
 void World::addGoals()
