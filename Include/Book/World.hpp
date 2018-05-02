@@ -112,7 +112,7 @@ class World : private sf::NonCopyable
 		std::vector<SpawnPoint>				mEnemySpawnPoints;
 		std::vector<PlayerBat*>				mActiveEnemies;
 
-		std::vector<Goal>					mGoals;
+		std::vector<std::shared_ptr<Goal>>	mGoals;
 
 		bool								mNetworkedWorld;
 		NetworkNode*						mNetworkNode;
