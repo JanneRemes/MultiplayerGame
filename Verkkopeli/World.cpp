@@ -22,10 +22,8 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 , mSounds(sounds)
 , mSceneGraph()
 , mSceneLayers()
-, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, 5000.f)
+, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, mWorldView.getSize().y)
 , mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
-, mScrollSpeed(-50.f)
-, mScrollSpeedCompensation(1.f)
 , mPlayerBats()
 , mEnemySpawnPoints()
 , mActiveEnemies()
@@ -42,23 +40,15 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 	mWorldView.setCenter(mSpawnPosition);
 }
 
-void World::setWorldScrollCompensation(float compensation)
-{
-	mScrollSpeedCompensation = compensation;
-}
-
 void World::update(sf::Time dt)
 {
-	// Scroll the world, reset player velocity
-	mWorldView.move(0.f, mScrollSpeed * dt.asSeconds() * mScrollSpeedCompensation);	
-
 	FOREACH(PlayerBat* a, mPlayerBats)
 		a->setVelocity(0.f, 0.f);
 
 	// Setup commands to destroy entities
 	destroyEntitiesOutsideView();
 
-	// Forward commands to scene graph, adapt velocity (scrolling, diagonal correction)
+	// Forward commands to scene graph, adapt velocity (diagonal correction)
 	while (!mCommandQueue.isEmpty())
 		mSceneGraph.onCommand(mCommandQueue.pop(), dt);
 
@@ -94,10 +84,10 @@ CommandQueue& World::getCommandQueue()
 
 PlayerBat* World::getPlayerBat(int identifier) const
 {
-	FOREACH(PlayerBat* a, mPlayerBats)
+	FOREACH(PlayerBat* playerBat, mPlayerBats)
 	{
-		if (a->getIdentifier() == identifier)
-			return a;
+		if (playerBat->getIdentifier() == identifier)
+			return playerBat;
 	}
 
 	return nullptr;
@@ -118,7 +108,10 @@ PlayerBat* World::addPlayerBat(int identifier)
 	if (mPlayerBats.size() == 0)
 	{
 		std::unique_ptr<PlayerBat> player(new PlayerBat(PlayerBat::Player1, mTextures, mFonts));
-		player->setPosition(mWorldView.getCenter());
+		sf::Vector2f vec;
+		vec.x = 0.80 * mWorldBounds.width;
+		vec.y = 0.80 * mWorldBounds.height;
+		player->setPosition(vec);
 		player->setIdentifier(identifier);
 
 		mPlayerBats.push_back(player.get());
@@ -127,7 +120,10 @@ PlayerBat* World::addPlayerBat(int identifier)
 	else
 	{
 		std::unique_ptr<PlayerBat> player(new PlayerBat(PlayerBat::Player2, mTextures, mFonts));
-		player->setPosition(mWorldView.getCenter());
+		sf::Vector2f vec;
+		vec.x = 0.20 * mWorldBounds.width;
+		vec.y = 0.20 * mWorldBounds.height;
+		player->setPosition(vec);
 		player->setIdentifier(identifier);
 
 		mPlayerBats.push_back(player.get());
@@ -177,7 +173,6 @@ bool World::hasPlayerReachedEnd() const
 void World::loadTextures()
 {
 	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
-	mTextures.load(Textures::Jungle, "Media/Textures/Jungle.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
 	mTextures.load(Textures::Player1, "Media/Textures/player1.png");
@@ -211,8 +206,7 @@ void World::adaptPlayerVelocity()
 		if (velocity.x != 0.f && velocity.y != 0.f)
 			PlayerBat->setVelocity(velocity / std::sqrt(2.f));
 
-		// Add scrolling velocity
-		PlayerBat->accelerate(0.f, mScrollSpeed);
+		PlayerBat->accelerate(0.f, 0.f);
 	}
 }
 
@@ -305,19 +299,6 @@ void World::buildScene()
 
 		mSceneGraph.attachChild(std::move(layer));
 	}
-
-	// Prepare the tiled background
-	sf::Texture& jungleTexture = mTextures.get(Textures::Jungle);
-	jungleTexture.setRepeated(true);
-
-	float viewHeight = mWorldView.getSize().y;
-	sf::IntRect textureRect(mWorldBounds);
-	textureRect.height += static_cast<int>(viewHeight);
-
-	// Add the background sprite to the scene
-	std::unique_ptr<SpriteNode> jungleSprite(new SpriteNode(jungleTexture, textureRect));
-	jungleSprite->setPosition(mWorldBounds.left, mWorldBounds.top - viewHeight);
-	mSceneLayers[Background]->attachChild(std::move(jungleSprite));
 
 	// Add the finish line to the scene
 	sf::Texture& finishTexture = mTextures.get(Textures::FinishLine);

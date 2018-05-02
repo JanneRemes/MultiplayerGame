@@ -376,23 +376,20 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		case Server::InitialState:
 		{
 			sf::Int32 PlayerBatCount;
-			float worldHeight, currentScroll;
-			packet >> worldHeight >> currentScroll;
+			float worldHeight;
+			packet >> worldHeight;
 
 			mWorld.setWorldHeight(worldHeight);
-			mWorld.setCurrentBattleFieldPosition(currentScroll);
 
 			packet >> PlayerBatCount;
 			for (sf::Int32 i = 0; i < PlayerBatCount; ++i)
 			{
 				sf::Int32 PlayerBatIdentifier;
-				sf::Int32 hitpoints;
 				sf::Vector2f PlayerBatPosition;
-				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y >> hitpoints;
+				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y;
 
 				PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
-				PlayerBat->setPosition(PlayerBatPosition);
-				PlayerBat->setHitpoints(hitpoints);
+				PlayerBat->setHitpoints(1);
 
 				mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr));
 			}
@@ -458,9 +455,6 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			packet >> currentWorldPosition >> PlayerBatCount;
 
 			float currentViewPosition = mWorld.getViewBounds().top + mWorld.getViewBounds().height;
-
-			// Set the world's scroll compensation according to whether the view is behind or too advanced
-			mWorld.setWorldScrollCompensation(currentViewPosition / currentWorldPosition);
 
 			for (sf::Int32 i = 0; i < PlayerBatCount; ++i)
 			{

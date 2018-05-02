@@ -10,16 +10,14 @@ namespace Category
 		None				= 0,
 		SceneAirLayer		= 1 << 0,
 		PlayerBat		= 1 << 1,
-		AlliedAircraft		= 1 << 2,
-		EnemyBat		= 1 << 3,
-		Pickup				= 1 << 4,
-		AlliedProjectile	= 1 << 5,
-		EnemyProjectile		= 1 << 6,
-		ParticleSystem		= 1 << 7,
-		SoundEffect			= 1 << 8,
-		Network				= 1 << 9,
+		EnemyBat		= 1 << 2,
+		Pickup				= 1 << 3,
+		AlliedProjectile	= 1 << 4,
+		EnemyProjectile		= 1 << 5,
+		ParticleSystem		= 1 << 6,
+		SoundEffect			= 1 << 7,
+		Network				= 1 << 8,
 
-		Aircraft = PlayerBat | AlliedAircraft | EnemyBat,
 		Projectile = AlliedProjectile | EnemyProjectile,
 	};
 }

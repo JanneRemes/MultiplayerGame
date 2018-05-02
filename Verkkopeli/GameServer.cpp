@@ -22,7 +22,6 @@ GameServer::GameServer(sf::Vector2f battlefieldSize)
 , mConnectedPlayers(0)
 , mWorldHeight(5000.f)
 , mBattleFieldRect(0.f, mWorldHeight - battlefieldSize.y, battlefieldSize.x, battlefieldSize.y)
-, mBattleFieldScrollSpeed(-50.f)
 , mPlayerBatCount(0)
 , mPeers(1)
 , mPlayerBatIdentifierCounter(1)
@@ -127,7 +126,6 @@ void GameServer::executionThread()
 		// Fixed update step
 		while (stepTime >= stepInterval)
 		{
-			mBattleFieldRect.top += mBattleFieldScrollSpeed * stepInterval.asSeconds();
 			stepTime -= stepInterval;
 		}
 

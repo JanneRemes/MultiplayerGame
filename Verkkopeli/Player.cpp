@@ -40,10 +40,6 @@ Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* bi
 {
 	// Set initial action bindings
 	initializeActions();
-
-	// Assign all categories to player's aircraft
-	FOREACH(auto& pair, mActionBinding)
-		pair.second.category = Category::PlayerBat;
 }
 
 void Player::handleEvent(const sf::Event& event, CommandQueue& commands)

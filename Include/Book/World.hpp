@@ -46,8 +46,6 @@ class World : private sf::NonCopyable
 		bool 								hasAlivePlayer() const;
 		bool 								hasPlayerReachedEnd() const;
 
-		void								setWorldScrollCompensation(float compensation);
-
 		PlayerBat*							getPlayerBat(int identifier) const;
 		sf::FloatRect						getBattlefieldBounds() const;
 
@@ -105,8 +103,6 @@ class World : private sf::NonCopyable
 
 		sf::FloatRect						mWorldBounds;
 		sf::Vector2f						mSpawnPosition;
-		float								mScrollSpeed;
-		float								mScrollSpeedCompensation;
 		std::vector<PlayerBat*>				mPlayerBats;
 
 		std::vector<SpawnPoint>				mEnemySpawnPoints;

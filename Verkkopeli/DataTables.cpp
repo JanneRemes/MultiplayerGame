@@ -15,14 +15,14 @@ std::vector<PlayerBatData> initializePlayerBatData()
 	data[PlayerBat::Player1].speed = 200.f;
 	data[PlayerBat::Player1].fireInterval = sf::seconds(1);
 	data[PlayerBat::Player1].texture = Textures::Player1;
-	//data[PlayerBat::Player1].textureRect = sf::IntRect(0, 0, 48, 64); // TODO fix shape
+	data[PlayerBat::Player1].textureRect = sf::IntRect(0, 0, 150, 24);
 	data[PlayerBat::Player1].hasRollAnimation = true;
 
 	data[PlayerBat::Player2].hitpoints = 100;
 	data[PlayerBat::Player2].speed = 200.f;
 	data[PlayerBat::Player2].fireInterval = sf::seconds(1);
 	data[PlayerBat::Player2].texture = Textures::Player2;
-	data[PlayerBat::Player2].textureRect = sf::IntRect(0, 0, 48, 64);
+	data[PlayerBat::Player2].textureRect = sf::IntRect(0, 0, 150, 24);
 	data[PlayerBat::Player2].hasRollAnimation = true;
 
 	data[PlayerBat::Eagle].hitpoints = 100;

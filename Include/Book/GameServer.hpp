@@ -20,9 +20,9 @@ class GameServer
 		explicit							GameServer(sf::Vector2f battlefieldSize);
 											~GameServer();
 
-		void								notifyPlayerSpawn(sf::Int32 aircraftIdentifier);
-		void								notifyPlayerRealtimeChange(sf::Int32 aircraftIdentifier, sf::Int32 action, bool actionEnabled);
-		void								notifyPlayerEvent(sf::Int32 aircraftIdentifier, sf::Int32 action);
+		void								notifyPlayerSpawn(sf::Int32 playerIdentifier);
+		void								notifyPlayerRealtimeChange(sf::Int32 playerIdentifier, sf::Int32 action, bool actionEnabled);
+		void								notifyPlayerEvent(sf::Int32 playerIdentifier, sf::Int32 action);
 
 
 	private:
@@ -38,8 +38,8 @@ class GameServer
 			bool					timedOut;
 		};
 
-		// Structure to store information about current aircraft state
-		struct AircraftInfo
+		// Structure to store information about current player state
+		struct PlayerInfo
 		{
 			sf::Vector2f				position;
 			sf::Int32					hitpoints;
@@ -80,10 +80,9 @@ class GameServer
 
 		float								mWorldHeight;
 		sf::FloatRect						mBattleFieldRect;
-		float								mBattleFieldScrollSpeed;
 
 		std::size_t							mPlayerBatCount;
-		std::map<sf::Int32, AircraftInfo>	mPlayerBatInfo;
+		std::map<sf::Int32, PlayerInfo>	mPlayerBatInfo;
 
 		std::vector<PeerPtr>				mPeers;
 		sf::Int32							mPlayerBatIdentifierCounter;
