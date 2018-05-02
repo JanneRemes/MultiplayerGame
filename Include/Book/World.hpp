@@ -113,6 +113,8 @@ class World : private sf::NonCopyable
 		bool								mNetworkedWorld;
 		NetworkNode*						mNetworkNode;
 		SpriteNode*							mFinishSprite;
+		SpriteNode*							mGoalSprite;
+		SpriteNode*							mGoalSprite2;
 };
 
 #endif // BOOK_WORLD_HPP

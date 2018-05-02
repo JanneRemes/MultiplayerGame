@@ -11,7 +11,14 @@ Goal::Goal(int id, int hp, int x, int y) : Entity(hp)
 	posY = y;
 	
 	
-	if (!textureGoal.loadFromFile("Media/Textures/FinishLine.png"))
+	//if (!textureGoal.loadFromFile("Media/Textures/FinishLine.png"))
+	//{
+	//	std::cout << "Failure: Texture" << std::endl;
+	//}
+	//spriteGoal.setTexture(textureGoal);
+	//spriteGoal.setTextureRect(sf::IntRect(0, 38, 300, 38));
+
+	if (!textureGoal.loadFromFile("Media/Textures/goal.png"))
 	{
 		std::cout << "Failure: Texture" << std::endl;
 	}
