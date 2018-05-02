@@ -307,6 +307,9 @@ void World::buildScene()
 	mFinishSprite = finishSprite.get();
 	mSceneLayers[Background]->attachChild(std::move(finishSprite));
 
+	Goal *goalP1 = new Goal(0, 5, 362, 0);
+	Goal *goalP2 = new Goal(1, 5, 362, 730);
+
 	// Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));
 	mSceneGraph.attachChild(std::move(soundNode));

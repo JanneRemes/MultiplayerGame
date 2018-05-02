@@ -11,7 +11,7 @@ Goal::Goal(int id, int hp, int x, int y) : Entity(hp)
 	posY = y;
 	
 	
-	if (!textureGoal.loadFromFile("Media/Texture/FinishLine.png"))
+	if (!textureGoal.loadFromFile("Media/Textures/FinishLine.png"))
 	{
 		std::cout << "Failure: Texture" << std::endl;
 	}
