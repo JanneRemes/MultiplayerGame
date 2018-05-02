@@ -335,8 +335,8 @@ void World::destroyEntitiesOutsideView()
 
 void World::addGoals()
 {
-	mGoals.push_back(std::shared_ptr<Goal>(new Goal(0, 5, 100, 100)));
-	mGoals.push_back(std::shared_ptr<Goal>(new Goal(1, 5, 100, 500)));
+	mGoals.push_back(std::shared_ptr<Goal>(new Goal(0, 5, 362, 0)));
+	mGoals.push_back(std::shared_ptr<Goal>(new Goal(1, 5, 362, 730)));
 }
 
 sf::FloatRect World::getViewBounds() const
