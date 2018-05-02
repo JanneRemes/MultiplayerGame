@@ -42,7 +42,6 @@ class GameServer
 		struct PlayerInfo
 		{
 			sf::Vector2f				position;
-			sf::Int32					hitpoints;
 			std::map<sf::Int32, bool>	realtimeActions;
 		};
 
@@ -79,7 +78,7 @@ class GameServer
 		std::size_t							mConnectedPlayers;
 
 		float								mWorldHeight;
-		sf::FloatRect						mBattleFieldRect;
+		sf::FloatRect						mPlayAreaRect;
 
 		std::size_t							mPlayerBatCount;
 		std::map<sf::Int32, PlayerInfo>	mPlayerBatInfo;

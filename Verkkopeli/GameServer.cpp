@@ -20,8 +20,8 @@ GameServer::GameServer(sf::Vector2f battlefieldSize)
 , mClientTimeoutTime(sf::seconds(3.f))
 , mMaxConnectedPlayers(10)
 , mConnectedPlayers(0)
-, mWorldHeight(5000.f)
-, mBattleFieldRect(0.f, mWorldHeight - battlefieldSize.y, battlefieldSize.x, battlefieldSize.y)
+, mWorldHeight(battlefieldSize.y)
+, mPlayAreaRect(0.f, battlefieldSize.y, battlefieldSize.x, battlefieldSize.y)
 , mPlayerBatCount(0)
 , mPeers(1)
 , mPlayerBatIdentifierCounter(1)
@@ -161,52 +161,13 @@ void GameServer::tick()
 	}
 
 	// Remove IDs of PlayerBat that have been destroyed (relevant if a client has two, and loses one)
-	for (auto itr = mPlayerBatInfo.begin(); itr != mPlayerBatInfo.end(); )
+	/*for (auto itr = mPlayerBatInfo.begin(); itr != mPlayerBatInfo.end(); )
 	{
 		if (itr->second.hitpoints <= 0)
 			mPlayerBatInfo.erase(itr++);
 		else
 			++itr;
-	}
-
-	// Check if its time to attempt to spawn enemies
-	if (now() >= mTimeForNextSpawn + mLastSpawnTime)
-	{	
-		// No more enemies are spawned near the end
-		if (mBattleFieldRect.top > 600.f)
-		{
-			std::size_t enemyCount = 1u + randomInt(2);
-			float spawnCenter = static_cast<float>(randomInt(500) - 250);
-
-			// In case only one enemy is being spawned, it appears directly at the spawnCenter
-			float planeDistance = 0.f;
-			float nextSpawnPosition = spawnCenter;
-			
-			// In case there are two enemies being spawned together, each is spawned at each side of the spawnCenter, with a minimum distance
-			if (enemyCount == 2)
-			{
-				planeDistance = static_cast<float>(150 + randomInt(250));
-				nextSpawnPosition = spawnCenter - planeDistance / 2.f;
-			}
-
-			// Send the spawn orders to all clients
-			for (std::size_t i = 0; i < enemyCount; ++i)
-			{
-				sf::Packet packet;
-				packet << static_cast<sf::Int32>(Server::SpawnEnemy);
-				packet << static_cast<sf::Int32>(1 + randomInt(PlayerBat::TypeCount-1));
-				packet << mWorldHeight - mBattleFieldRect.top + 500;
-				packet << nextSpawnPosition;
-
-				nextSpawnPosition += planeDistance / 2.f;
-
-				sendToAll(packet);
-			}
-
-			mLastSpawnTime = now();
-			mTimeForNextSpawn = sf::milliseconds(2000 + randomInt(6000));
-		}
-	}
+	}*/
 }
 
 sf::Time GameServer::now() const
@@ -280,8 +241,7 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 		case Client::RequestCoopPartner:
 		{
 			receivingPeer.playerBatIdentifiers.push_back(mPlayerBatIdentifierCounter);
-			mPlayerBatInfo[mPlayerBatIdentifierCounter].position = sf::Vector2f(mBattleFieldRect.width / 2, mBattleFieldRect.top + mBattleFieldRect.height / 2);
-			mPlayerBatInfo[mPlayerBatIdentifierCounter].hitpoints = 100;
+			mPlayerBatInfo[mPlayerBatIdentifierCounter].position = sf::Vector2f(mPlayAreaRect.width / 2, mPlayAreaRect.top + mPlayAreaRect.height / 2);
 
 			sf::Packet requestPacket;
 			requestPacket << static_cast<sf::Int32>(Server::AcceptCoopPartner);
@@ -316,11 +276,9 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			for (sf::Int32 i = 0; i < numPlayerBats; ++i)
 			{
 				sf::Int32 PlayerBatIdentifier;
-				sf::Int32 PlayerBatHitpoints;
 				sf::Vector2f PlayerBatPosition;
-				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y >> PlayerBatHitpoints;
+				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y;
 				mPlayerBatInfo[PlayerBatIdentifier].position = PlayerBatPosition;
-				mPlayerBatInfo[PlayerBatIdentifier].hitpoints = PlayerBatHitpoints;
 			}
 		} break;
 
@@ -354,7 +312,7 @@ void GameServer::updateClientState()
 {
 	sf::Packet updateClientStatePacket;
 	updateClientStatePacket << static_cast<sf::Int32>(Server::UpdateClientState);
-	updateClientStatePacket << static_cast<float>(mBattleFieldRect.top + mBattleFieldRect.height);
+	updateClientStatePacket << static_cast<float>(mPlayAreaRect.top + mPlayAreaRect.height);
 	updateClientStatePacket << static_cast<sf::Int32>(mPlayerBatInfo.size());
 
 	FOREACH(auto PlayerBat, mPlayerBatInfo)
@@ -371,8 +329,7 @@ void GameServer::handleIncomingConnections()
 	if (mListenerSocket.accept(mPeers[mConnectedPlayers]->socket) == sf::TcpListener::Done)
 	{
 		// order the new client to spawn its own plane ( player 1 )
-		mPlayerBatInfo[mPlayerBatIdentifierCounter].position = sf::Vector2f(mBattleFieldRect.width / 2, mBattleFieldRect.top + mBattleFieldRect.height / 2);
-		mPlayerBatInfo[mPlayerBatIdentifierCounter].hitpoints = 100;
+		mPlayerBatInfo[mPlayerBatIdentifierCounter].position = sf::Vector2f(mPlayAreaRect.width / 2, mPlayAreaRect.top + mPlayAreaRect.height / 2);
 
 		sf::Packet packet;
 		packet << static_cast<sf::Int32>(Server::SpawnSelf);
@@ -439,15 +396,16 @@ void GameServer::informWorldState(sf::TcpSocket& socket)
 {
 	sf::Packet packet;
 	packet << static_cast<sf::Int32>(Server::InitialState);
-	packet << mWorldHeight << mBattleFieldRect.top + mBattleFieldRect.height;
-	packet << static_cast<sf::Int32>(mPlayerBatCount);
+	packet << mWorldHeight;
+	sf::Int32 playerBatCount = static_cast<sf::Int32>(mPlayerBatCount);
+	packet << playerBatCount;
 
 	for (std::size_t i = 0; i < mConnectedPlayers; ++i)
 	{
 		if (mPeers[i]->ready)
 		{
 			FOREACH(sf::Int32 identifier, mPeers[i]->playerBatIdentifiers)
-				packet << identifier << mPlayerBatInfo[identifier].position.x << mPlayerBatInfo[identifier].position.y << mPlayerBatInfo[identifier].hitpoints;
+				packet << identifier << mPlayerBatInfo[identifier].position.x << mPlayerBatInfo[identifier].position.y;
 		}
 	}
 

@@ -14,22 +14,22 @@
 
 
 World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sounds, bool networked)
-: mTarget(outputTarget)
-, mSceneTexture()
-, mWorldView(outputTarget.getDefaultView())
-, mTextures() 
-, mFonts(fonts)
-, mSounds(sounds)
-, mSceneGraph()
-, mSceneLayers()
-, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, mWorldView.getSize().y)
-, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
-, mPlayerBats()
-, mEnemySpawnPoints()
-, mActiveEnemies()
-, mNetworkedWorld(networked)
-, mNetworkNode(nullptr)
-, mFinishSprite(nullptr)
+	: mTarget(outputTarget)
+	, mSceneTexture()
+	, mWorldView(outputTarget.getDefaultView())
+	, mTextures()
+	, mFonts(fonts)
+	, mSounds(sounds)
+	, mSceneGraph()
+	, mSceneLayers()
+	, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, mWorldView.getSize().y)
+	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
+	, mPlayerBats()
+	, mEnemySpawnPoints()
+	, mActiveEnemies()
+	, mNetworkedWorld(networked)
+	, mNetworkNode(nullptr)
+	, mFinishSprite(nullptr)
 {
 	mSceneTexture.create(mTarget.getSize().x, mTarget.getSize().y);
 
@@ -134,7 +134,7 @@ PlayerBat* World::addPlayerBat(int identifier)
 }
 
 void World::createPickup(sf::Vector2f position, Pickup::Type type)
-{	
+{
 	std::unique_ptr<Pickup> pickup(new Pickup(type, mTextures));
 	pickup->setPosition(position);
 	pickup->setVelocity(0.f, 1.f);
@@ -148,8 +148,8 @@ bool World::pollGameAction(GameActions::Action& out)
 
 void World::setCurrentBattleFieldPosition(float lineY)
 {
-	mWorldView.setCenter(mWorldView.getCenter().x, lineY - mWorldView.getSize().y/2);
-	mSpawnPosition.y = mWorldBounds.height; 
+	mWorldView.setCenter(mWorldView.getCenter().x, lineY - mWorldView.getSize().y / 2);
+	mSpawnPosition.y = mWorldBounds.height;
 }
 
 void World::setWorldHeight(float height)
@@ -166,7 +166,7 @@ bool World::hasPlayerReachedEnd() const
 {
 	if (PlayerBat* PlayerBat = getPlayerBat(1))
 		return !mWorldBounds.contains(PlayerBat->getPosition());
-	else 
+	else
 		return false;
 }
 
@@ -337,9 +337,12 @@ void World::destroyEntitiesOutsideView()
 {
 	Command command;
 	command.category = Category::Projectile | Category::EnemyBat;
-	command.action = derivedAction<Entity>([this] (Entity& e, sf::Time)
+	command.action = derivedAction<Entity>([this](Entity& e, sf::Time)
 	{
-		if (!getBattlefieldBounds().intersects(e.getBoundingRect()))
+		sf::FloatRect fr = getBattlefieldBounds();
+		sf::FloatRect br = e.getBoundingRect();
+
+		if (!fr.intersects(br))
 			e.remove();
 	});
 
@@ -354,15 +357,15 @@ void World::addGoals()
 
 sf::FloatRect World::getViewBounds() const
 {
-	return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
+	return sf::FloatRect(/*mWorldView.getCenter() - mWorldView.getSize() / 2.f*/ sf::Vector2f(0, mWorldView.getSize().y), mWorldView.getSize());
 }
 
 sf::FloatRect World::getBattlefieldBounds() const
 {
 	// Return view bounds + some area at top, where enemies spawn
 	sf::FloatRect bounds = getViewBounds();
-	bounds.top -= 100.f;
-	bounds.height += 100.f;
+	/*bounds.top -= 100.f;
+	bounds.height += 100.f;*/
 
 	return bounds;
 }

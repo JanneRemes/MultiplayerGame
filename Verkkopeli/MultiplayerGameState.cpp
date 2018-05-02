@@ -224,7 +224,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 			FOREACH(sf::Int32 identifier, mLocalPlayerIdentifiers)
 			{			
 				if (PlayerBat* PlayerBat = mWorld.getPlayerBat(identifier))
-					positionUpdatePacket << identifier << PlayerBat->getPosition().x << PlayerBat->getPosition().y << static_cast<sf::Int32>(PlayerBat->getHitpoints());
+					positionUpdatePacket << identifier << PlayerBat->getPosition().x << PlayerBat->getPosition().y;
 			}
 
 			mSocket.send(positionUpdatePacket);
@@ -385,8 +385,8 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			for (sf::Int32 i = 0; i < PlayerBatCount; ++i)
 			{
 				sf::Int32 PlayerBatIdentifier;
-				sf::Vector2f PlayerBatPosition;
-				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y;
+				//sf::Vector2f PlayerBatPosition;
+				packet >> PlayerBatIdentifier;// >> PlayerBatPosition.x >> PlayerBatPosition.y;
 
 				PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 				PlayerBat->setHitpoints(1);
