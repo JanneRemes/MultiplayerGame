@@ -59,7 +59,7 @@ void PlayerBat::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) c
 	if (isDestroyed() && mShowExplosion)
 		target.draw(mExplosion, states);
 	else
-		target.draw(mSprite, states);
+			target.draw(mSprite, states);
 }
 
 void PlayerBat::disablePickups()

@@ -337,11 +337,9 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		case Server::SpawnSelf:
 		{
 			sf::Int32 PlayerBatIdentifier;
-			sf::Vector2f PlayerBatPosition;
-			packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y;
+			packet >> PlayerBatIdentifier;
 
 			PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
-			PlayerBat->setPosition(PlayerBatPosition);
 			
 			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, getContext().keys1));
 			mLocalPlayerIdentifiers.push_back(PlayerBatIdentifier);
@@ -353,11 +351,9 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		case Server::PlayerConnect:
 		{
 			sf::Int32 PlayerBatIdentifier;
-			sf::Vector2f PlayerBatPosition;
-			packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y;
+			packet >> PlayerBatIdentifier;
 
 			PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
-			PlayerBat->setPosition(PlayerBatPosition);
 
 			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr));
 		} break;
@@ -385,8 +381,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			for (sf::Int32 i = 0; i < PlayerBatCount; ++i)
 			{
 				sf::Int32 PlayerBatIdentifier;
-				//sf::Vector2f PlayerBatPosition;
-				packet >> PlayerBatIdentifier;// >> PlayerBatPosition.x >> PlayerBatPosition.y;
+				packet >> PlayerBatIdentifier;;
 
 				PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 				PlayerBat->setHitpoints(1);

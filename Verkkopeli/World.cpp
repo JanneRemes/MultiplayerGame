@@ -109,7 +109,7 @@ PlayerBat* World::addPlayerBat(int identifier)
 	{
 		std::unique_ptr<PlayerBat> player(new PlayerBat(PlayerBat::Player1, mTextures, mFonts));
 		sf::Vector2f vec;
-		vec.x = 0.80 * mWorldBounds.width;
+		vec.x = 0.50 * mWorldBounds.width;
 		vec.y = 0.80 * mWorldBounds.height;
 		player->setPosition(vec);
 		player->setIdentifier(identifier);
@@ -121,7 +121,7 @@ PlayerBat* World::addPlayerBat(int identifier)
 	{
 		std::unique_ptr<PlayerBat> player(new PlayerBat(PlayerBat::Player2, mTextures, mFonts));
 		sf::Vector2f vec;
-		vec.x = 0.20 * mWorldBounds.width;
+		vec.x = 0.50 * mWorldBounds.width;
 		vec.y = 0.20 * mWorldBounds.height;
 		player->setPosition(vec);
 		player->setIdentifier(identifier);
@@ -183,7 +183,7 @@ void World::adaptPlayerPosition()
 {
 	// Keep player's position inside the screen bounds, at least borderDistance units from the border
 	sf::FloatRect viewBounds = getViewBounds();
-	const float borderDistance = 40.f;
+	const float borderDistance = 10.f;
 
 	FOREACH(PlayerBat* PlayerBat, mPlayerBats)
 	{
@@ -301,11 +301,11 @@ void World::buildScene()
 	}
 
 	// Add the finish line to the scene
-	sf::Texture& finishTexture = mTextures.get(Textures::FinishLine);
+	/*sf::Texture& finishTexture = mTextures.get(Textures::FinishLine);
 	std::unique_ptr<SpriteNode> finishSprite(new SpriteNode(finishTexture));
 	finishSprite->setPosition(0.f, -76.f);
 	mFinishSprite = finishSprite.get();
-	mSceneLayers[Background]->attachChild(std::move(finishSprite));
+	mSceneLayers[Background]->attachChild(std::move(finishSprite));*/
 
 	// Add the player1 goal to the scene
 	Goal *goalP1 = new Goal(0, 5, 422, 730);
@@ -357,15 +357,16 @@ void World::addGoals()
 
 sf::FloatRect World::getViewBounds() const
 {
-	return sf::FloatRect(/*mWorldView.getCenter() - mWorldView.getSize() / 2.f*/ sf::Vector2f(0, mWorldView.getSize().y), mWorldView.getSize());
+	//return sf::FloatRect(sf::Vector2f(0, mWorldView.getSize().y), mWorldView.getSize());
+	return sf::FloatRect(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
 }
 
 sf::FloatRect World::getBattlefieldBounds() const
 {
 	// Return view bounds + some area at top, where enemies spawn
 	sf::FloatRect bounds = getViewBounds();
-	/*bounds.top -= 100.f;
-	bounds.height += 100.f;*/
+	bounds.top -= 50.f;
+	bounds.height += 50.f;
 
 	return bounds;
 }
