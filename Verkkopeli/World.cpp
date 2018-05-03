@@ -368,11 +368,11 @@ void World::destroyEntitiesOutsideView()
 	mCommandQueue.push(command);
 }
 
-void World::addGoals()
-{
-	mGoals.push_back(std::shared_ptr<Goal>(new Goal(0, 5, 362, 0, mFonts)));
-	mGoals.push_back(std::shared_ptr<Goal>(new Goal(1, 5, 362, 730, mFonts)));
-}
+//void World::addGoals()
+//{
+//	mGoals.push_back(std::shared_ptr<Goal>(new Goal(0, 5, 362, 0, mFonts)));
+//	mGoals.push_back(std::shared_ptr<Goal>(new Goal(1, 5, 362, 730, mFonts)));
+//}
 
 sf::FloatRect World::getViewBounds() const
 {
