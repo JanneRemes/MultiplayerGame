@@ -308,13 +308,13 @@ void World::buildScene()
 	mSceneLayers[Background]->attachChild(std::move(finishSprite));*/
 
 	// Add the player1 goal to the scene
-	Goal *goalP1 = new Goal(0, 5, 422, 730);
+	Goal *goalP1 = new Goal(0, 5, 422, 730, mFonts);
 	std::unique_ptr<SpriteNode> goalSprite(new SpriteNode(goalP1->textureGoal));
 	goalSprite->setPosition(goalP1->posX, goalP1->posY);
 	mGoalSprite = goalSprite.get();
 	mSceneLayers[Background]->attachChild(std::move(goalSprite));
 	// Add the player2 goal to the scene
-	Goal *goalP2 = new Goal(1, 5, 422, 0);
+	Goal *goalP2 = new Goal(1, 5, 422, 0, mFonts);
 	std::unique_ptr<SpriteNode> goalSprite2(new SpriteNode(goalP2->textureGoal));
 	goalSprite2->setPosition(goalP2->posX, goalP2->posY);
 	mGoalSprite2 = goalSprite2.get();
@@ -351,8 +351,8 @@ void World::destroyEntitiesOutsideView()
 
 void World::addGoals()
 {
-	mGoals.push_back(std::shared_ptr<Goal>(new Goal(0, 5, 362, 0)));
-	mGoals.push_back(std::shared_ptr<Goal>(new Goal(1, 5, 362, 730)));
+	mGoals.push_back(std::shared_ptr<Goal>(new Goal(0, 5, 362, 0, mFonts)));
+	mGoals.push_back(std::shared_ptr<Goal>(new Goal(1, 5, 362, 730, mFonts)));
 }
 
 sf::FloatRect World::getViewBounds() const
