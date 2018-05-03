@@ -135,9 +135,9 @@ PlayerBat* World::addPlayerBat(int identifier)
 
 void World::createPickup(sf::Vector2f position, Pickup::Type type)
 {
-	std::unique_ptr<Pickup> pickup(new Pickup(type, mTextures));
+	std::unique_ptr<Pickup> pickup(new Pickup(Pickup::Ball, mTextures));
 	pickup->setPosition(position);
-	pickup->setVelocity(0.f, 1.f);
+	pickup->setVelocity(0.f, 10.f);
 	mSceneLayers[UpperAir]->attachChild(std::move(pickup));
 }
 
@@ -176,6 +176,7 @@ void World::loadTextures()
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
 	mTextures.load(Textures::Player1, "Media/Textures/player1.png");
 	mTextures.load(Textures::Player2, "Media/Textures/player2.png");
+	mTextures.load(Textures::Ball, "Media/Textures/ball.png");
 }
 
 void World::adaptPlayerPosition()
@@ -249,21 +250,18 @@ void World::handleCollisions()
 
 		else if (matchesCategories(pair, Category::PlayerBat, Category::Pickup))
 		{
-			auto& player = static_cast<PlayerBat&>(*pair.first);
+			/*auto& player = static_cast<PlayerBat&>(*pair.first);
 			auto& pickup = static_cast<Pickup&>(*pair.second);
 
 			// Apply pickup effect to player, destroy projectile
 			pickup.apply(player);
 			pickup.destroy();
-			player.playLocalSound(mCommandQueue, SoundEffect::CollectPickup);
-		}
-		else if (matchesCategories(pair, Category::PlayerBat, Category::Ball))
-		{
-			auto& ball = static_cast<Ball&>(*pair.second);
+			player.playLocalSound(mCommandQueue, SoundEffect::CollectPickup);*/
+			auto& ball = static_cast<Pickup&>(*pair.second);
 
 			ball.setVelocity(ball.getVelocity().x, ball.getVelocity().y * -1);
 		}
-		else if (matchesCategories(pair, Category::Goal, Category::Ball))
+		else if (matchesCategories(pair, Category::Goal, Category::Pickup))
 		{
 			// TODO
 		}
@@ -329,16 +327,6 @@ void World::buildScene()
 	mGoalSprite2 = goalSprite2.get();
 	mSceneLayers[Background]->attachChild(std::move(goalSprite2));
 
-	// Add ball to scene
-	Ball* ball = new Ball();
-	std::unique_ptr<SpriteNode> ballSprite(new SpriteNode(ball->mTexture));
-	sf::Vector2f vec;
-	vec.x = getBattlefieldBounds().width / 2;
-	vec.y = getBattlefieldBounds().height / 2;
-	ballSprite->setPosition(vec);
-	mBall = ballSprite.get();
-	mSceneLayers[LowerAir]->attachChild(std::move(ballSprite));
-
 	// Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));
 	mSceneGraph.attachChild(std::move(soundNode));
@@ -368,11 +356,11 @@ void World::destroyEntitiesOutsideView()
 	mCommandQueue.push(command);
 }
 
-//void World::addGoals()
-//{
-//	mGoals.push_back(std::shared_ptr<Goal>(new Goal(0, 5, 362, 0, mFonts)));
-//	mGoals.push_back(std::shared_ptr<Goal>(new Goal(1, 5, 362, 730, mFonts)));
-//}
+/*void World::addGoals()
+{
+mGoals.push_back(std::shared_ptr<Goal>(new Goal(0, 5, 362, 0, mFonts)));
+mGoals.push_back(std::shared_ptr<Goal>(new Goal(1, 5, 362, 730, mFonts)));
+}*/
 
 sf::FloatRect World::getViewBounds() const
 {

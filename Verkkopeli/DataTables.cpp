@@ -44,5 +44,8 @@ std::vector<PickupData> initializePickupData()
 {
 	std::vector<PickupData> data(Pickup::TypeCount);
 
+	data[Pickup::Ball].texture = Textures::Ball;
+	data[Pickup::Ball].textureRect = sf::IntRect(0, 24, 24, 24);
+
 	return data;
 }

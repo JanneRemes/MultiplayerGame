@@ -15,6 +15,7 @@ class Pickup : public Entity
 	public:
 		enum Type
 		{
+			Ball,
 			HealthRefill,
 			TypeCount
 		};
