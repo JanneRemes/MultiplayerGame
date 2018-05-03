@@ -162,6 +162,7 @@
     <ClInclude Include="..\Include\Book\TitleState.hpp" />
     <ClInclude Include="..\Include\Book\Utility.hpp" />
     <ClInclude Include="..\Include\Book\World.hpp" />
+    <ClInclude Include="Ball.h" />
     <ClInclude Include="Goal.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +170,7 @@
     <None Include="..\Include\Book\Utility.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="PlayerBat.cpp" />
     <ClCompile Include="Animation.cpp" />

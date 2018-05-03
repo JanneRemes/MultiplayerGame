@@ -12,15 +12,13 @@ class Projectile : public Entity
 	public:
 		enum Type
 		{
-			AlliedBullet,
+			Ball,
 			TypeCount
 		};
 
 
 	public:
 								Projectile(Type type, const TextureHolder& textures);
-
-		void					guideTowards(sf::Vector2f position);
 
 		virtual unsigned int	getCategory() const;
 		virtual sf::FloatRect	getBoundingRect() const;

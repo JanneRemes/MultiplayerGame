@@ -12,6 +12,7 @@
 #include <Book/SoundPlayer.hpp>
 #include <Book/NetworkProtocol.hpp>
 #include "../Verkkopeli/Goal.hpp"
+#include "../Verkkopeli/Ball.h"
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -115,6 +116,7 @@ class World : private sf::NonCopyable
 		SpriteNode*							mFinishSprite;
 		SpriteNode*							mGoalSprite;
 		SpriteNode*							mGoalSprite2;
+		SpriteNode*							mBall;
 };
 
 #endif // BOOK_WORLD_HPP

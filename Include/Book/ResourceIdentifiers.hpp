@@ -15,7 +15,7 @@ namespace Textures
 {
 	enum ID
 	{
-		Entities,
+		Ball,
 		TitleScreen,
 		Buttons,
 		Explosion,

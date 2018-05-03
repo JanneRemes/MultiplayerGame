@@ -24,11 +24,6 @@ Projectile::Projectile(Type type, const TextureHolder& textures)
 	centerOrigin(mSprite);
 }
 
-void Projectile::guideTowards(sf::Vector2f position)
-{
-	mTargetDirection = unitVector(position - getWorldPosition());
-}
-
 void Projectile::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	Entity::updateCurrent(dt, commands);
@@ -41,7 +36,7 @@ void Projectile::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) 
 
 unsigned int Projectile::getCategory() const
 {
-	return Category::AlliedProjectile;
+	return Category::Ball;
 }
 
 sf::FloatRect Projectile::getBoundingRect() const

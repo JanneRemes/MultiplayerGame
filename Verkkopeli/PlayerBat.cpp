@@ -190,10 +190,10 @@ void PlayerBat::createPickup(SceneNode& node, const TextureHolder& textures) con
 void PlayerBat::updateTexts()
 {
 	// Display hitpoints
-	if (isDestroyed())
+	/*if (isDestroyed())
 		mHealthDisplay->setString("");
 	else
 		mHealthDisplay->setString(toString(getHitpoints()) + " HP");
 	mHealthDisplay->setPosition(0.f, 50.f);
-	mHealthDisplay->setRotation(-getRotation());
+	mHealthDisplay->setRotation(-getRotation());*/
 }

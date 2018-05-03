@@ -25,13 +25,6 @@ std::vector<PlayerBatData> initializePlayerBatData()
 	data[PlayerBat::Player2].textureRect = sf::IntRect(0, 0, 150, 24);
 	data[PlayerBat::Player2].hasRollAnimation = true;
 
-	data[PlayerBat::Eagle].hitpoints = 100;
-	data[PlayerBat::Eagle].speed = 200.f;
-	data[PlayerBat::Eagle].fireInterval = sf::seconds(1);
-	data[PlayerBat::Eagle].texture = Textures::Entities;
-	data[PlayerBat::Eagle].textureRect = sf::IntRect(0, 0, 48, 64);
-	data[PlayerBat::Eagle].hasRollAnimation = true;
-
 	return data;
 }
 
@@ -39,10 +32,10 @@ std::vector<ProjectileData> initializeProjectileData()
 {
 	std::vector<ProjectileData> data(Projectile::TypeCount);
 
-	data[Projectile::AlliedBullet].damage = 10;
-	data[Projectile::AlliedBullet].speed = 300.f;
-	data[Projectile::AlliedBullet].texture = Textures::Entities;
-	data[Projectile::AlliedBullet].textureRect = sf::IntRect(175, 64, 3, 14);
+	data[0].damage = 10;
+	data[0].speed = 300.f;
+	data[0].texture = Textures::Ball;
+	data[0].textureRect = sf::IntRect(0, 0, 24, 24);
 
 	return data;
 }
@@ -50,10 +43,6 @@ std::vector<ProjectileData> initializeProjectileData()
 std::vector<PickupData> initializePickupData()
 {
 	std::vector<PickupData> data(Pickup::TypeCount);
-	
-	data[Pickup::HealthRefill].texture = Textures::Entities;
-	data[Pickup::HealthRefill].textureRect = sf::IntRect(0, 64, 40, 40);
-	data[Pickup::HealthRefill].action = [] (PlayerBat& a) { a.repair(25); };
 
 	return data;
 }

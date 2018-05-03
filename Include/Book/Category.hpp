@@ -12,13 +12,12 @@ namespace Category
 		PlayerBat		= 1 << 1,
 		EnemyBat		= 1 << 2,
 		Pickup				= 1 << 3,
-		AlliedProjectile	= 1 << 4,
-		EnemyProjectile		= 1 << 5,
-		ParticleSystem		= 1 << 6,
-		SoundEffect			= 1 << 7,
-		Network				= 1 << 8,
+		Ball	= 1 << 4,
+		Goal = 1 << 5,
+		SoundEffect			= 1 << 6,
+		Network				= 1 << 7,
 
-		Projectile = AlliedProjectile | EnemyProjectile,
+		Projectile = Ball,
 	};
 }
 

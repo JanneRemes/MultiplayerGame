@@ -172,7 +172,6 @@ bool World::hasPlayerReachedEnd() const
 
 void World::loadTextures()
 {
-	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
 	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
 	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
 	mTextures.load(Textures::Player1, "Media/Textures/player1.png");
@@ -258,6 +257,16 @@ void World::handleCollisions()
 			pickup.destroy();
 			player.playLocalSound(mCommandQueue, SoundEffect::CollectPickup);
 		}
+		else if (matchesCategories(pair, Category::PlayerBat, Category::Ball))
+		{
+			auto& ball = static_cast<Ball&>(*pair.second);
+
+			ball.setVelocity(ball.getVelocity().x, ball.getVelocity().y * -1);
+		}
+		else if (matchesCategories(pair, Category::Goal, Category::Ball))
+		{
+			// TODO
+		}
 	}
 }
 
@@ -319,6 +328,16 @@ void World::buildScene()
 	goalSprite2->setPosition(goalP2->posX, goalP2->posY);
 	mGoalSprite2 = goalSprite2.get();
 	mSceneLayers[Background]->attachChild(std::move(goalSprite2));
+
+	// Add ball to scene
+	Ball* ball = new Ball();
+	std::unique_ptr<SpriteNode> ballSprite(new SpriteNode(ball->mTexture));
+	sf::Vector2f vec;
+	vec.x = getBattlefieldBounds().width / 2;
+	vec.y = getBattlefieldBounds().height / 2;
+	ballSprite->setPosition(vec);
+	mBall = ballSprite.get();
+	mSceneLayers[LowerAir]->attachChild(std::move(ballSprite));
 
 	// Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));
