@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <iostream>
 
 
 using namespace std::placeholders;
@@ -25,6 +26,8 @@ struct PlayerBatMover
 	{
 		if (playerBat.getIdentifier() == playerBatID)
 			playerBat.accelerate(velocity * playerBat.getMaxSpeed());
+		else
+			std::cout << "PERKELE";
 	}
 
 	sf::Vector2f velocity;
@@ -32,11 +35,12 @@ struct PlayerBatMover
 };
 
 
-Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding)
+Player::Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding, PlayerBat* bat)
 : mKeyBinding(binding)
 , mCurrentMatchStatus(MatchRunning)
 , mIdentifier(identifier)
 , mSocket(socket)
+, thisPlayersBat(bat)
 {
 	// Set initial action bindings
 	initializeActions();
@@ -66,6 +70,7 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 				commands.push(mActionBinding[action]);
 			}
 		}
+		movementHax(event.key.code);
 	}
 
 	// Realtime change (network connected)
@@ -81,6 +86,42 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 			packet << static_cast<sf::Int32>(action);
 			packet << (event.type == sf::Event::KeyPressed);
 			mSocket->send(packet);
+		}
+		movementHax(event.key.code);
+	}
+}
+
+void Player::movementHax(sf::Keyboard::Key key)
+{
+	switch (key)
+	{
+		case sf::Keyboard::Left:
+		{
+			thisPlayersBat->accelerate(-1, 0);
+			//derivedAction<PlayerBat>(PlayerBatMover(-1, 0, mIdentifier));
+			break;
+		}
+		case sf::Keyboard::Right:
+		{
+			thisPlayersBat->accelerate(+1, 0);
+			//derivedAction<PlayerBat>(PlayerBatMover(+1, 0, mIdentifier));
+			break;
+		}
+		case sf::Keyboard::Up:
+		{
+			thisPlayersBat->accelerate(0, -1);
+			//derivedAction<PlayerBat>(PlayerBatMover(0, -1, mIdentifier));
+			break;
+		}
+		case sf::Keyboard::Down:
+		{
+			thisPlayersBat->setVelocity(0, +1);
+			//derivedAction<PlayerBat>(PlayerBatMover(0, +1, mIdentifier));
+			break;
+		}
+		default:
+		{
+			break;
 		}
 	}
 }

@@ -42,8 +42,8 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 
 void World::update(sf::Time dt)
 {
-	FOREACH(PlayerBat* a, mPlayerBats)
-		a->setVelocity(0.f, 0.f);
+	/*FOREACH(PlayerBat* a, mPlayerBats)
+		a->setVelocity(0.f, 0.f);*/
 
 	// Setup commands to destroy entities
 	destroyEntitiesOutsideView();
@@ -198,15 +198,16 @@ void World::adaptPlayerPosition()
 
 void World::adaptPlayerVelocity()
 {
-	FOREACH(PlayerBat* PlayerBat, mPlayerBats)
+	FOREACH(PlayerBat* playerBat, mPlayerBats)
 	{
-		sf::Vector2f velocity = PlayerBat->getVelocity();
+		sf::Vector2f velocity = playerBat->getVelocity();
 
 		// If moving diagonally, reduce velocity (to have always same velocity)
 		if (velocity.x != 0.f && velocity.y != 0.f)
-			PlayerBat->setVelocity(velocity / std::sqrt(2.f));
+			playerBat->setVelocity(velocity / std::sqrt(2.f));
 
-		PlayerBat->accelerate(0.f, 0.f);
+		//playerBat->accelerate(0.f, -20.f); 
+		//tässä kusee joku, also inputtien pitäisi myös accelerate
 	}
 }
 
@@ -372,8 +373,8 @@ sf::FloatRect World::getBattlefieldBounds() const
 {
 	// Return view bounds + some area at top, where enemies spawn
 	sf::FloatRect bounds = getViewBounds();
-	bounds.top -= 50.f;
-	bounds.height += 50.f;
+	bounds.top -= 20.f;
+	bounds.height += 20.f;
 
 	return bounds;
 }

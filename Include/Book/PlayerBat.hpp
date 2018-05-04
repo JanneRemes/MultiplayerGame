@@ -16,7 +16,6 @@ class PlayerBat : public Entity
 	public:
 		enum Type
 		{
-			Eagle,
 			Player1,
 			Player2,
 			TypeCount
@@ -32,7 +31,6 @@ class PlayerBat : public Entity
 		virtual bool 			isMarkedForRemoval() const;
 		bool					isAllied() const;
 		float					getMaxSpeed() const;
-		void					disablePickups();
 
 		void					playLocalSound(CommandQueue& commands, SoundEffect::ID effect);
 		int						getIdentifier();
@@ -41,8 +39,8 @@ class PlayerBat : public Entity
 	private:
 		virtual void			drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 		virtual void 			updateCurrent(sf::Time dt, CommandQueue& commands);
-		void					checkPickupDrop(CommandQueue& commands);
-		void					createPickup(SceneNode& node, const TextureHolder& textures) const;
+
+		void updateMovement(sf::Time);
 
 		void					updateTexts();
 
@@ -52,10 +50,7 @@ class PlayerBat : public Entity
 		Animation				mExplosion;
 		bool 					mShowExplosion;
 		bool					mExplosionBegan;
-		bool					mSpawnedPickup;
-		bool					mPickupsEnabled;
 
-		Command 				mDropPickupCommand;
 		float					mTravelledDistance;
 		std::size_t				mDirectionIndex;
 		TextNode*				mHealthDisplay;

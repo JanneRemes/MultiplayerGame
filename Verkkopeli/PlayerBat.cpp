@@ -1,7 +1,6 @@
 #include <Book/PlayerBat.hpp>
 #include <Book/DataTables.hpp>
 #include <Book/Utility.hpp>
-#include <Book/Pickup.hpp>
 #include <Book/CommandQueue.hpp>
 #include <Book/SoundNode.hpp>
 #include <Book/NetworkNode.hpp>
@@ -27,10 +26,6 @@ PlayerBat::PlayerBat(Type type, const TextureHolder& textures, const FontHolder&
 , mExplosion(textures.get(Textures::Explosion))
 , mShowExplosion(true)
 , mExplosionBegan(false)
-, mSpawnedPickup(false)
-, mPickupsEnabled(true)
-, mDropPickupCommand()
-, mTravelledDistance(0.f)
 , mDirectionIndex(0)
 , mIdentifier(0)
 {
@@ -40,12 +35,6 @@ PlayerBat::PlayerBat(Type type, const TextureHolder& textures, const FontHolder&
 
 	centerOrigin(mSprite);
 	centerOrigin(mExplosion);
-
-	mDropPickupCommand.category = Category::SceneAirLayer;
-	mDropPickupCommand.action   = [this, &textures] (SceneNode& node, sf::Time)
-	{
-		createPickup(node, textures);
-	};
 
 	std::unique_ptr<TextNode> healthDisplay(new TextNode(fonts, ""));
 	mHealthDisplay = healthDisplay.get();
@@ -62,11 +51,6 @@ void PlayerBat::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) c
 			target.draw(mSprite, states);
 }
 
-void PlayerBat::disablePickups()
-{
-	mPickupsEnabled = false;
-}
-
 void PlayerBat::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	// Update texts and roll animation
@@ -75,7 +59,6 @@ void PlayerBat::updateCurrent(sf::Time dt, CommandQueue& commands)
 	// Entity has been destroyed: Possibly drop pickup, mark for removal
 	if (isDestroyed())
 	{
-		checkPickupDrop(commands);
 		mExplosion.update(dt);
 
 		// Play explosion sound only once
@@ -105,7 +88,24 @@ void PlayerBat::updateCurrent(sf::Time dt, CommandQueue& commands)
 		return;
 	}
 
+	updateMovement(dt);
 	Entity::updateCurrent(dt, commands);
+}
+
+void PlayerBat::updateMovement(sf::Time dt)
+{
+	const std::vector<Direction>& directions = Table[mType].directions;
+	if (!directions.empty())
+	{
+		// Compute velocity from direction
+		float radians = toRadian(directions[mDirectionIndex].angle + 90.f);
+		float vx = getMaxSpeed() * std::cos(radians);
+		float vy = getMaxSpeed() * std::sin(radians);
+
+		setVelocity(vx, vy);
+
+		mTravelledDistance += getMaxSpeed() * dt.asSeconds();
+	}
 }
 
 unsigned int PlayerBat::getCategory() const
@@ -134,7 +134,7 @@ void PlayerBat::remove()
 
 bool PlayerBat::isAllied() const
 {
-	return mType == Eagle;
+	return mType == Player1;
 }
 
 float PlayerBat::getMaxSpeed() const
@@ -165,26 +165,6 @@ int	PlayerBat::getIdentifier()
 void PlayerBat::setIdentifier(int identifier)
 {
 	mIdentifier = identifier;
-}
-
-void PlayerBat::checkPickupDrop(CommandQueue& commands)
-{
-	// Drop pickup, if enemy airplane, with probability 1/3, if pickup not yet dropped
-	// and if not in network mode (where pickups are dropped via packets)
-	if (!isAllied() && randomInt(3) == 0 && !mSpawnedPickup && mPickupsEnabled)
-		commands.push(mDropPickupCommand);
-
-	mSpawnedPickup = true;
-}
-
-void PlayerBat::createPickup(SceneNode& node, const TextureHolder& textures) const
-{
-	auto type = static_cast<Pickup::Type>(randomInt(Pickup::TypeCount));
-
-	std::unique_ptr<Pickup> pickup(new Pickup(type, textures));
-	pickup->setPosition(getWorldPosition());
-	pickup->setVelocity(0.f, 1.f);
-	node.attachChild(std::move(pickup));
 }
 
 void PlayerBat::updateTexts()

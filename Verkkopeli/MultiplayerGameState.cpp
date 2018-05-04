@@ -339,9 +339,9 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			sf::Int32 PlayerBatIdentifier;
 			packet >> PlayerBatIdentifier;
 
-			PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
+			PlayerBat* playerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 			
-			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, getContext().keys1));
+			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, getContext().keys1, playerBat));
 			mLocalPlayerIdentifiers.push_back(PlayerBatIdentifier);
 
 			mGameStarted = true;
@@ -353,9 +353,9 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			sf::Int32 PlayerBatIdentifier;
 			packet >> PlayerBatIdentifier;
 
-			PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
+			PlayerBat* playerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 
-			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr));
+			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr, playerBat));
 		} break;
 
 		// 
@@ -386,7 +386,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 				PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 				PlayerBat->setHitpoints(1);
 
-				mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr));
+				mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr, mWorld.getPlayerBat(PlayerBatIdentifier)));
 			}
 		} break;
 
@@ -397,7 +397,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			packet >> PlayerBatIdentifier;
 
 			mWorld.addPlayerBat(PlayerBatIdentifier);
-			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, getContext().keys2));
+			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, getContext().keys2, mWorld.getPlayerBat(PlayerBatIdentifier)));
 			mLocalPlayerIdentifiers.push_back(PlayerBatIdentifier);
 			sf::Vector2f position(mWorld.getBattlefieldBounds().width / 2, mWorld.getBattlefieldBounds().height / 2);
 			mWorld.createPickup(position, static_cast<Pickup::Type>(Pickup::Ball));
@@ -423,6 +423,8 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			bool actionEnabled;
 			packet >> PlayerBatIdentifier >> action >> actionEnabled;
 
+			Player::Action actualAction = static_cast<Player::Action>(action);
+			//mWorld.getPlayerBat(PlayerBatIdentifier)->setVelocity()
 			auto itr = mPlayers.find(PlayerBatIdentifier);
 			if (itr != mPlayers.end())
 				itr->second->handleNetworkRealtimeChange(static_cast<Player::Action>(action), actionEnabled);

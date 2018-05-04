@@ -3,6 +3,7 @@
 
 #include <Book/Command.hpp>
 #include <Book/KeyBinding.hpp>
+#include <Book\PlayerBat.hpp>
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Window/Event.hpp>
@@ -27,7 +28,7 @@ class Player : private sf::NonCopyable
 
 
 	public:
-								Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding);
+								Player(sf::TcpSocket* socket, sf::Int32 identifier, const KeyBinding* binding, PlayerBat* bat);
 
 		void					handleEvent(const sf::Event& event, CommandQueue& commands);
 		void					handleRealtimeInput(CommandQueue& commands);
@@ -43,12 +44,15 @@ class Player : private sf::NonCopyable
 		void					disableAllRealtimeActions();
 		bool					isLocal() const;
 
+		void movementHax(sf::Keyboard::Key);
+
 
 	private:
 		void					initializeActions();
 
 
 	private:
+		PlayerBat* thisPlayersBat;
 		const KeyBinding*			mKeyBinding;
 		std::map<Action, Command>	mActionBinding;
 		std::map<Action, bool>		mActionProxies;

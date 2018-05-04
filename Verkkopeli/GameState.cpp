@@ -7,9 +7,8 @@
 GameState::GameState(StateStack& stack, Context context)
 : State(stack, context)
 , mWorld(*context.window, *context.fonts, *context.sounds, false)
-, mPlayer(nullptr, 1, context.keys1)
+, mPlayer(nullptr, 1, context.keys1, mWorld.addPlayerBat(1))
 {
-	mWorld.addPlayerBat(1);
 	mPlayer.setMatchStatus(Player::MatchRunning);
 
 	// Play game theme
