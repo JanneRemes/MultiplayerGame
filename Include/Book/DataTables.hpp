@@ -58,6 +58,7 @@ struct ProjectileData
 struct PickupData
 {
 	std::function<void(PlayerBat&)>	action;
+	float							speed;
 	Textures::ID					texture;
 	sf::IntRect						textureRect;
 };

@@ -298,8 +298,11 @@ void World::handleCollisions()
 			pickup.destroy();
 			player.playLocalSound(mCommandQueue, SoundEffect::CollectPickup);*/
 			auto& ball = static_cast<Pickup&>(*pair.second);
-
-			ball.setVelocity(ball.getVelocity().x * 1.1, ball.getVelocity().y * -1.15);
+			if ( ball.getVelocity().x < 5 &&
+				 ball.getVelocity().y < 5)
+				ball.setVelocity(ball.getVelocity().x * 1.1, ball.getVelocity().y * -1.15);
+			else
+				ball.setVelocity(ball.getVelocity().x * 1.0, ball.getVelocity().y * -1.0);
 		}
 		else if (matchesCategories(pair, Category::Goal, Category::Pickup))
 		{
