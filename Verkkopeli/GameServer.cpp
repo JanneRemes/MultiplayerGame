@@ -292,7 +292,7 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			packet >> x;
 			packet >> y;
 
-			// Enemy explodes: With certain probability, drop pickup
+			/*// Enemy explodes: With certain probability, drop pickup
 			// To avoid multiple messages spawning multiple pickups, only listen to first peer (host)
 			if (action == GameActions::EnemyExplode && randomInt(3) == 0 && &receivingPeer == mPeers[0].get())
 			{
@@ -303,7 +303,7 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 				packet << y;
 
 				sendToAll(packet);
-			}
+			}*/
 		}
 	}
 }

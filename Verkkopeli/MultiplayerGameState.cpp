@@ -440,14 +440,14 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 		} break;
 
 		// Pickup created
-		case Server::SpawnPickup:
+		/*case Server::SpawnPickup:
 		{
 			sf::Int32 type;
 			sf::Vector2f position;
 			packet >> type >> position.x >> position.y;
 
 			mWorld.createPickup(position, static_cast<Pickup::Type>(type));
-		} break;
+		} break;*/
 
 		//
 		case Server::UpdateClientState:
