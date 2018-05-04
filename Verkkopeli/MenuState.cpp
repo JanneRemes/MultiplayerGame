@@ -12,17 +12,17 @@ MenuState::MenuState(StateStack& stack, Context context)
 : State(stack, context)
 , mGUIContainer()
 {
-	sf::Texture& texture = context.textures->get(Textures::TitleScreen);
-	mBackgroundSprite.setTexture(texture);
+	//sf::Texture& texture = context.textures->get(Textures::TitleScreen);
+	//mBackgroundSprite.setTexture(texture);
 
-	auto playButton = std::make_shared<GUI::Button>(context);
+	/*auto playButton = std::make_shared<GUI::Button>(context);
 	playButton->setPosition(100, 300);
 	playButton->setText("Play");
 	playButton->setCallback([this] ()
 	{
 		requestStackPop();
 		requestStackPush(States::Game);
-	});
+	});*/
 
 	auto hostPlayButton = std::make_shared<GUI::Button>(context);
 	hostPlayButton->setPosition(100, 350);
@@ -58,7 +58,7 @@ MenuState::MenuState(StateStack& stack, Context context)
 		requestStackPop();
 	});
 
-	mGUIContainer.pack(playButton);
+	//mGUIContainer.pack(playButton);
 	mGUIContainer.pack(hostPlayButton);
 	mGUIContainer.pack(joinPlayButton);
 	mGUIContainer.pack(settingsButton);

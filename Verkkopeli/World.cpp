@@ -43,7 +43,7 @@ World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sou
 void World::update(sf::Time dt)
 {
 	/*FOREACH(PlayerBat* a, mPlayerBats)
-		a->setVelocity(0.f, 0.f);*/
+	a->setVelocity(0.f, 0.f);*/
 
 	// Setup commands to destroy entities
 	destroyEntitiesOutsideView();
@@ -124,7 +124,8 @@ PlayerBat* World::addPlayerBat(int identifier)
 		vec.x = 0.50 * mWorldBounds.width;
 		vec.y = 0.20 * mWorldBounds.height;
 		player->setPosition(vec);
-		player->setIdentifier(identifier);
+		if (identifier == 1)
+			player->setIdentifier(identifier + 1);
 
 		mPlayerBats.push_back(player.get());
 		mSceneLayers[UpperAir]->attachChild(std::move(player));
@@ -135,10 +136,16 @@ PlayerBat* World::addPlayerBat(int identifier)
 
 void World::createPickup(sf::Vector2f position, Pickup::Type type)
 {
-	std::unique_ptr<Pickup> pickup(new Pickup(Pickup::Ball, mTextures));
-	pickup->setPosition(position);
-	pickup->setVelocity(0.f, 10.f);
-	mSceneLayers[UpperAir]->attachChild(std::move(pickup));
+	if (type == Pickup::Ball)
+	{
+		std::unique_ptr<Pickup> pickup(new Pickup(Pickup::Ball, mTextures));
+		pickup->setPosition(position);
+		int r1 = 50;
+		int r2 = 50;
+		pickup->setVelocity(r1, r2);
+		pickup->setWorldBounds(getViewBounds());
+		mSceneLayers[UpperAir]->attachChild(std::move(pickup));
+	}
 }
 
 bool World::pollGameAction(GameActions::Action& out)
@@ -206,8 +213,8 @@ void World::adaptPlayerVelocity()
 	//	if (velocity.x != 0.f && velocity.y != 0.f)
 	//		playerBat->setVelocity(velocity / std::sqrt(2.f));
 
-		//playerBat->accelerate(0.f, -20.f); 
-		//tässä kusee joku, also inputtien pitäisi myös accelerate
+	//playerBat->accelerate(0.f, -20.f); 
+	//tässä kusee joku, also inputtien pitäisi myös accelerate
 	//}
 }
 
@@ -260,7 +267,7 @@ void World::handleCollisions()
 			player.playLocalSound(mCommandQueue, SoundEffect::CollectPickup);*/
 			auto& ball = static_cast<Pickup&>(*pair.second);
 
-			ball.setVelocity(ball.getVelocity().x, ball.getVelocity().y * -1);
+			ball.setVelocity(ball.getVelocity().x * 1.1, ball.getVelocity().y * -1.15);
 		}
 		else if (matchesCategories(pair, Category::Goal, Category::Pickup))
 		{

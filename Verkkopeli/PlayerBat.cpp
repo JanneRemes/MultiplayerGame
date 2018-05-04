@@ -134,7 +134,7 @@ void PlayerBat::remove()
 
 bool PlayerBat::isAllied() const
 {
-	return mType == Player1;
+	return mType == Player1 || mType == Player2;
 }
 
 float PlayerBat::getMaxSpeed() const

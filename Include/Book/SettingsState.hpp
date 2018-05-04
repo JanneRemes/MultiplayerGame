@@ -29,7 +29,7 @@ class SettingsState : public State
 
 
 	private:
-		sf::Sprite											mBackgroundSprite;
+		//sf::Sprite											mBackgroundSprite;
 		GUI::Container										mGUIContainer;
 		std::array<GUI::Button::Ptr, 2*PlayerAction::Count>	mBindingButtons;
 		std::array<GUI::Label::Ptr, 2*PlayerAction::Count> 	mBindingLabels;

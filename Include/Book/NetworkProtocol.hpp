@@ -49,7 +49,7 @@ namespace PlayerActions
 		MoveRight,
 		MoveUp,
 		MoveDown,
-		Fire,
+		//Fire,
 		ActionCount
 	};
 }

@@ -52,7 +52,6 @@ public:
 	void								createPickup(sf::Vector2f position, Pickup::Type type);
 	bool								pollGameAction(GameActions::Action& out);
 
-
 private:
 	void								loadTextures();
 	void								adaptPlayerPosition();

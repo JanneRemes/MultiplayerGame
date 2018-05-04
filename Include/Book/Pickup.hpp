@@ -29,14 +29,18 @@ class Pickup : public Entity
 
 		void 					apply(PlayerBat& player) const;
 
+		void setWorldBounds(sf::FloatRect);
+
 
 	protected:
 		virtual void			drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
-
+		virtual void			updateCurrent(sf::Time dt, CommandQueue& commands);
 
 	private:
 		Type 					mType;
 		sf::Sprite				mSprite;
+
+		sf::FloatRect worldBounds;
 };
 
 #endif // BOOK_PICKUP_HPP

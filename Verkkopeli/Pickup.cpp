@@ -36,8 +36,33 @@ void Pickup::apply(PlayerBat& player) const
 	Table[mType].action(player);
 }
 
+void Pickup::setWorldBounds(sf::FloatRect bounds)
+{
+	worldBounds = bounds;
+}
+
 void Pickup::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(mSprite, states);
+}
+
+void Pickup::updateCurrent(sf::Time dt, CommandQueue& commands)
+{
+	if (mType == Ball)
+	{
+		sf::FloatRect boundingRect = this->getBoundingRect();
+
+		if (0 >= boundingRect.left
+			|| worldBounds.width <= boundingRect.left + boundingRect.width)
+		{
+			this->setVelocity(this->getVelocity().x * -1, this->getVelocity().y);
+		}
+		if (0 >= boundingRect.top ||
+			worldBounds.height <= boundingRect.top + boundingRect.height)
+		{
+			this->setVelocity(this->getVelocity().x, this->getVelocity().y * -1);
+		}
+	}
+	move(this->getVelocity() * dt.asSeconds());
 }
 

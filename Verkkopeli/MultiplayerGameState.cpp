@@ -356,6 +356,9 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			PlayerBat* playerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 
 			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr, playerBat));
+
+			sf::Vector2f position(mWorld.getBattlefieldBounds().width / 2, mWorld.getBattlefieldBounds().height / 2);
+			mWorld.createPickup(position, static_cast<Pickup::Type>(Pickup::Ball));
 		} break;
 
 		// 
