@@ -124,8 +124,8 @@ PlayerBat* World::addPlayerBat(int identifier)
 		vec.x = 0.50 * mWorldBounds.width;
 		vec.y = 0.20 * mWorldBounds.height;
 		player->setPosition(vec);
-		if (identifier == 1)
-			player->setIdentifier(identifier + 1);
+		/*if (identifier == 1)*/
+			player->setIdentifier(identifier/* + 1*/);
 
 		mPlayerBats.push_back(player.get());
 		mSceneLayers[UpperAir]->attachChild(std::move(player));

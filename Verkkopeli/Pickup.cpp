@@ -55,12 +55,12 @@ void Pickup::updateCurrent(sf::Time dt, CommandQueue& commands)
 		if (0 >= boundingRect.left
 			|| worldBounds.width <= boundingRect.left + boundingRect.width)
 		{
-			this->setVelocity(this->getVelocity().x * -1, this->getVelocity().y);
+			this->setVelocity(this->getVelocity().x * -1.1, this->getVelocity().y);
 		}
 		if (0 >= boundingRect.top ||
 			worldBounds.height <= boundingRect.top + boundingRect.height)
 		{
-			this->setVelocity(this->getVelocity().x, this->getVelocity().y * -1);
+			this->setVelocity(this->getVelocity().x, this->getVelocity().y * -1.1);
 		}
 	}
 	move(this->getVelocity() * dt.asSeconds());

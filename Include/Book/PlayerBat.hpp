@@ -55,6 +55,7 @@ class PlayerBat : public Entity
 		std::size_t				mDirectionIndex;
 		TextNode*				mHealthDisplay;
 	
-		int						mIdentifier;};
+		int						mIdentifier;
+};
 
 #endif // BOOK_PlayerBat_HPP

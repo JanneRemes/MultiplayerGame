@@ -133,7 +133,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 		bool foundLocalPlane = false;
 		for (auto itr = mPlayers.begin(); itr != mPlayers.end(); )
 		{
-			// Check if there are no more local planes for remote clients
+			// Check if there are no more local players for remote clients
 			if (std::find(mLocalPlayerIdentifiers.begin(), mLocalPlayerIdentifiers.end(), itr->first) != mLocalPlayerIdentifiers.end())
 			{
 				foundLocalPlane = true;
@@ -339,6 +339,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			sf::Int32 PlayerBatIdentifier;
 			packet >> PlayerBatIdentifier;
 
+			PlayerBatIdentifier = mPlayers.size() + 1;
 			PlayerBat* playerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 			
 			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, getContext().keys1, playerBat));
@@ -353,6 +354,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			sf::Int32 PlayerBatIdentifier;
 			packet >> PlayerBatIdentifier;
 
+			PlayerBatIdentifier = mPlayers.size() + 1;
 			PlayerBat* playerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 
 			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr, playerBat));
@@ -386,6 +388,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 				sf::Int32 PlayerBatIdentifier;
 				packet >> PlayerBatIdentifier;;
 
+				PlayerBatIdentifier = mPlayers.size() + 1;
 				PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 				PlayerBat->setHitpoints(1);
 
