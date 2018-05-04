@@ -198,17 +198,17 @@ void World::adaptPlayerPosition()
 
 void World::adaptPlayerVelocity()
 {
-	FOREACH(PlayerBat* playerBat, mPlayerBats)
-	{
-		sf::Vector2f velocity = playerBat->getVelocity();
+	//FOREACH(PlayerBat* playerBat, mPlayerBats)
+	//{
+	//	sf::Vector2f velocity = playerBat->getVelocity();
 
-		// If moving diagonally, reduce velocity (to have always same velocity)
-		if (velocity.x != 0.f && velocity.y != 0.f)
-			playerBat->setVelocity(velocity / std::sqrt(2.f));
+	//	// If moving diagonally, reduce velocity (to have always same velocity)
+	//	if (velocity.x != 0.f && velocity.y != 0.f)
+	//		playerBat->setVelocity(velocity / std::sqrt(2.f));
 
 		//playerBat->accelerate(0.f, -20.f); 
 		//tässä kusee joku, also inputtien pitäisi myös accelerate
-	}
+	//}
 }
 
 bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2)

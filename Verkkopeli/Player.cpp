@@ -97,25 +97,38 @@ void Player::movementHax(sf::Keyboard::Key key)
 	{
 		case sf::Keyboard::Left:
 		{
-			thisPlayersBat->accelerate(-1, 0);
+			if ((thisPlayersBat->getVelocity().x * -1) > thisPlayersBat->getMaxSpeed())
+				thisPlayersBat->accelerate(0, 0);
+			else
+				thisPlayersBat->accelerate(-40, 0);
+			
 			//derivedAction<PlayerBat>(PlayerBatMover(-1, 0, mIdentifier));
 			break;
 		}
 		case sf::Keyboard::Right:
 		{
-			thisPlayersBat->accelerate(+1, 0);
+			if (thisPlayersBat->getVelocity().x > thisPlayersBat->getMaxSpeed())
+				thisPlayersBat->accelerate(0, 0);
+			else
+				thisPlayersBat->accelerate(+40, 0);
 			//derivedAction<PlayerBat>(PlayerBatMover(+1, 0, mIdentifier));
 			break;
 		}
 		case sf::Keyboard::Up:
 		{
-			thisPlayersBat->accelerate(0, -1);
+			if ((thisPlayersBat->getVelocity().y * -1) > thisPlayersBat->getMaxSpeed())
+				thisPlayersBat->accelerate(0, 0);
+			else
+				thisPlayersBat->accelerate(0, -40);
 			//derivedAction<PlayerBat>(PlayerBatMover(0, -1, mIdentifier));
 			break;
 		}
 		case sf::Keyboard::Down:
 		{
-			thisPlayersBat->setVelocity(0, +1);
+			if (thisPlayersBat->getVelocity().y > thisPlayersBat->getMaxSpeed())
+				thisPlayersBat->accelerate(0, 0);
+			else
+				thisPlayersBat->accelerate(0, +40);
 			//derivedAction<PlayerBat>(PlayerBatMover(0, +1, mIdentifier));
 			break;
 		}
