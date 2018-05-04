@@ -134,6 +134,37 @@ PlayerBat* World::addPlayerBat(int identifier)
 	return mPlayerBats.back();
 }
 
+PlayerGoal* World::addPlayerGoal(int identifier)
+{
+	if (mPlayerGoals.size() == 0)
+	{
+		std::unique_ptr<PlayerGoal> player(new PlayerGoal(PlayerGoal::Goal1, mTextures, mFonts));
+		sf::Vector2f vec;
+		vec.x = 0.50 * mWorldBounds.width;
+		vec.y = 0.95 * mWorldBounds.height;
+		player->setPosition(vec);
+		player->setIdentifier(identifier);
+
+		mPlayerGoals.push_back(player.get());
+		mSceneLayers[UpperAir]->attachChild(std::move(player));
+	}
+	else
+	{
+		std::unique_ptr<PlayerGoal> player(new PlayerGoal(PlayerGoal::Goal2, mTextures, mFonts));
+		sf::Vector2f vec;
+		vec.x = 0.50 * mWorldBounds.width;
+		vec.y = 0.05 * mWorldBounds.height;
+		player->setPosition(vec);
+		if (identifier == 1)
+			player->setIdentifier(identifier + 1);
+
+		mPlayerGoals.push_back(player.get());
+		mSceneLayers[UpperAir]->attachChild(std::move(player));
+	}
+
+	return mPlayerGoals.back();
+}
+
 void World::createPickup(sf::Vector2f position, Pickup::Type type)
 {
 	if (type == Pickup::Ball)
@@ -184,6 +215,7 @@ void World::loadTextures()
 	mTextures.load(Textures::Player1, "Media/Textures/player1.png");
 	mTextures.load(Textures::Player2, "Media/Textures/player2.png");
 	mTextures.load(Textures::Ball, "Media/Textures/ball.png");
+	mTextures.load(Textures::Goal, "Media/Textures/goal.png");
 }
 
 void World::adaptPlayerPosition()
@@ -322,18 +354,18 @@ void World::buildScene()
 	mFinishSprite = finishSprite.get();
 	mSceneLayers[Background]->attachChild(std::move(finishSprite));*/
 
-	// Add the player1 goal to the scene
-	Goal *goalP1 = new Goal(0, 5, 422, 730, mFonts);
-	std::unique_ptr<SpriteNode> goalSprite(new SpriteNode(goalP1->textureGoal));
-	goalSprite->setPosition(goalP1->posX, goalP1->posY);
-	mGoalSprite = goalSprite.get();
-	mSceneLayers[Background]->attachChild(std::move(goalSprite));
-	// Add the player2 goal to the scene
-	Goal *goalP2 = new Goal(1, 5, 422, 0, mFonts);
-	std::unique_ptr<SpriteNode> goalSprite2(new SpriteNode(goalP2->textureGoal));
-	goalSprite2->setPosition(goalP2->posX, goalP2->posY);
-	mGoalSprite2 = goalSprite2.get();
-	mSceneLayers[Background]->attachChild(std::move(goalSprite2));
+	//// Add the player1 goal to the scene
+	//Goal *goalP1 = new Goal(0, 5, 422, 730, mFonts);
+	//std::unique_ptr<SpriteNode> goalSprite(new SpriteNode(goalP1->textureGoal));
+	//goalSprite->setPosition(goalP1->posX, goalP1->posY);
+	//mGoalSprite = goalSprite.get();
+	//mSceneLayers[Background]->attachChild(std::move(goalSprite));
+	//// Add the player2 goal to the scene
+	//Goal *goalP2 = new Goal(1, 5, 422, 0, mFonts);
+	//std::unique_ptr<SpriteNode> goalSprite2(new SpriteNode(goalP2->textureGoal));
+	//goalSprite2->setPosition(goalP2->posX, goalP2->posY);
+	//mGoalSprite2 = goalSprite2.get();
+	//mSceneLayers[Background]->attachChild(std::move(goalSprite2));
 
 	// Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));

@@ -1,5 +1,6 @@
 #include <Book/DataTables.hpp>
 #include <Book/PlayerBat.hpp>
+#include <Book/PlayerGoal.hpp>
 #include <Book/Projectile.hpp>
 #include <Book/Pickup.hpp>
 
@@ -24,6 +25,27 @@ std::vector<PlayerBatData> initializePlayerBatData()
 	data[PlayerBat::Player2].texture = Textures::Player2;
 	data[PlayerBat::Player2].textureRect = sf::IntRect(0, 0, 150, 24);
 	data[PlayerBat::Player2].hasRollAnimation = true;
+
+	return data;
+}
+
+std::vector<PlayerGoalData> initializePlayerGoalData()
+{
+	std::vector<PlayerGoalData> data(PlayerGoal::TypeCount);
+
+	data[PlayerGoal::Goal1].hitpoints = 5;
+	data[PlayerGoal::Goal1].speed = 0.f;
+	data[PlayerGoal::Goal1].fireInterval = sf::seconds(1);
+	data[PlayerGoal::Goal1].texture = Textures::Goal;
+	data[PlayerGoal::Goal1].textureRect = sf::IntRect(0, 0, 164, 38);
+	data[PlayerGoal::Goal1].hasRollAnimation = true;
+
+	data[PlayerGoal::Goal2].hitpoints = 5;
+	data[PlayerGoal::Goal2].speed = 0.f;
+	data[PlayerGoal::Goal2].fireInterval = sf::seconds(1);
+	data[PlayerGoal::Goal2].texture = Textures::Goal;
+	data[PlayerGoal::Goal2].textureRect = sf::IntRect(0, 0, 164, 38);
+	data[PlayerGoal::Goal2].hasRollAnimation = true;
 
 	return data;
 }

@@ -6,6 +6,7 @@
 #include <Book/SceneNode.hpp>
 #include <Book/SpriteNode.hpp>
 #include <Book/PlayerBat.hpp>
+#include <Book/PlayerGoal.hpp>
 #include <Book/CommandQueue.hpp>
 #include <Book/Command.hpp>
 #include <Book/Pickup.hpp>
@@ -39,6 +40,7 @@ public:
 	sf::FloatRect						getViewBounds() const;
 	CommandQueue&						getCommandQueue();
 	PlayerBat*							addPlayerBat(int identifier);
+	PlayerGoal*							addPlayerGoal(int identifier);
 	void								removePlayerBat(int identifier);
 	void								setCurrentBattleFieldPosition(float lineY);
 	void								setWorldHeight(float height);
@@ -103,6 +105,7 @@ private:
 	sf::FloatRect						mWorldBounds;
 	sf::Vector2f						mSpawnPosition;
 	std::vector<PlayerBat*>				mPlayerBats;
+	std::vector<PlayerGoal*>			mPlayerGoals;
 
 	std::vector<SpawnPoint>				mEnemySpawnPoints;
 	std::vector<PlayerBat*>				mActiveEnemies;

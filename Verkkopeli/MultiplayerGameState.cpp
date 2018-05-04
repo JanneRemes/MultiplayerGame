@@ -345,6 +345,11 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, getContext().keys1, playerBat));
 			mLocalPlayerIdentifiers.push_back(PlayerBatIdentifier);
 
+			sf::Int32 PlayerGoalIdentifier;
+			packet >> PlayerGoalIdentifier;
+
+			PlayerGoal* playerGoal = mWorld.addPlayerGoal(PlayerGoalIdentifier);
+
 			mGameStarted = true;
 		} break;
 
@@ -358,6 +363,11 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			PlayerBat* playerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 
 			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr, playerBat));
+
+			sf::Int32 PlayerGoalIdentifier;
+			packet >> PlayerGoalIdentifier;
+
+			PlayerGoal* playerGoal = mWorld.addPlayerGoal(PlayerGoalIdentifier);
 
 			sf::Vector2f position(mWorld.getBattlefieldBounds().width / 2, mWorld.getBattlefieldBounds().height / 2);
 			mWorld.createPickup(position, static_cast<Pickup::Type>(Pickup::Ball));

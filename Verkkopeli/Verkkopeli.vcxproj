@@ -147,6 +147,7 @@
     <ClInclude Include="..\Include\Book\PauseState.hpp" />
     <ClInclude Include="..\Include\Book\Pickup.hpp" />
     <ClInclude Include="..\Include\Book\Player.hpp" />
+    <ClInclude Include="..\Include\Book\PlayerGoal.hpp" />
     <ClInclude Include="..\Include\Book\Projectile.hpp" />
     <ClInclude Include="..\Include\Book\ResourceHolder.hpp" />
     <ClInclude Include="..\Include\Book\ResourceIdentifiers.hpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerGoal.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="SettingsState.cpp" />

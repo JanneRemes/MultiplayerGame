@@ -22,6 +22,7 @@ namespace Textures
 		FinishLine,
 		Player1,
 		Player2,
+		Goal
 	};
 }
 

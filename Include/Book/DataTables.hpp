@@ -36,6 +36,17 @@ struct PlayerBatData
 	bool							hasRollAnimation;
 };
 
+struct PlayerGoalData
+{
+	int								hitpoints;
+	float							speed;
+	Textures::ID					texture;
+	sf::IntRect						textureRect;
+	sf::Time						fireInterval;
+	std::vector<Direction>			directions;
+	bool							hasRollAnimation;
+};
+
 struct ProjectileData
 {
 	int								damage;
@@ -59,6 +70,7 @@ struct ParticleData
 
 
 std::vector<PlayerBatData>	initializePlayerBatData();
+std::vector<PlayerGoalData> initializePlayerGoalData();
 std::vector<ProjectileData>	initializeProjectileData();
 std::vector<PickupData>		initializePickupData();
 std::vector<ParticleData>	initializeParticleData();

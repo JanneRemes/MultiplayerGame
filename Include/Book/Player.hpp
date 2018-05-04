@@ -4,6 +4,7 @@
 #include <Book/Command.hpp>
 #include <Book/KeyBinding.hpp>
 #include <Book\PlayerBat.hpp>
+#include <Book\PlayerGoal.hpp>
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Window/Event.hpp>
