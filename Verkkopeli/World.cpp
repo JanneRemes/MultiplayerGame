@@ -8,6 +8,7 @@
 #include <Book/Utility.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <iostream>
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -141,26 +142,38 @@ PlayerGoal* World::addPlayerGoal(int identifier)
 		std::unique_ptr<PlayerGoal> player(new PlayerGoal(PlayerGoal::Goal1, mTextures, mFonts));
 		sf::Vector2f vec;
 		vec.x = 0.50 * mWorldBounds.width;
-		vec.y = 0.95 * mWorldBounds.height;
+		vec.y = 0.90 * mWorldBounds.height;
 		player->setPosition(vec);
 		player->setIdentifier(identifier);
 
 		mPlayerGoals.push_back(player.get());
 		mSceneLayers[UpperAir]->attachChild(std::move(player));
-	}
-	else
-	{
-		std::unique_ptr<PlayerGoal> player(new PlayerGoal(PlayerGoal::Goal2, mTextures, mFonts));
-		sf::Vector2f vec;
-		vec.x = 0.50 * mWorldBounds.width;
-		vec.y = 0.05 * mWorldBounds.height;
-		player->setPosition(vec);
-		if (identifier == 1)
-			player->setIdentifier(identifier + 1);
 
-		mPlayerGoals.push_back(player.get());
-		mSceneLayers[UpperAir]->attachChild(std::move(player));
+		std::unique_ptr<PlayerGoal> player2(new PlayerGoal(PlayerGoal::Goal2, mTextures, mFonts));
+		sf::Vector2f vec2;
+		vec2.x = 0.50 * mWorldBounds.width;
+		vec2.y = 0.10 * mWorldBounds.height;
+		player2->setPosition(vec2);
+		if (identifier == 1)
+			player2->setIdentifier(identifier + 1);
+
+		mPlayerGoals.push_back(player2.get());
+		mSceneLayers[UpperAir]->attachChild(std::move(player2));
+
 	}
+	//else
+	//{
+	//	std::unique_ptr<PlayerGoal> player(new PlayerGoal(PlayerGoal::Goal2, mTextures, mFonts));
+	//	sf::Vector2f vec;
+	//	vec.x = 0.50 * mWorldBounds.width;
+	//	vec.y = 0.10 * mWorldBounds.height;
+	//	player->setPosition(vec);
+	//	if (identifier == 1)
+	//		player->setIdentifier(identifier + 1);
+
+	//	mPlayerGoals.push_back(player.get());
+	//	mSceneLayers[UpperAir]->attachChild(std::move(player));
+	//}
 
 	return mPlayerGoals.back();
 }
@@ -284,8 +297,8 @@ void World::handleCollisions()
 			auto& enemy = static_cast<PlayerBat&>(*pair.second);
 
 			// Collision: Player damage = enemy's remaining HP
-			player.damage(enemy.getHitpoints());
-			enemy.destroy();
+			//player.damage(enemy.getHitpoints());
+			//enemy.destroy();
 		}
 
 		else if (matchesCategories(pair, Category::PlayerBat, Category::Pickup))
@@ -307,6 +320,14 @@ void World::handleCollisions()
 		else if (matchesCategories(pair, Category::Goal, Category::Pickup))
 		{
 			// TODO
+			//Ajatus ei kulje enää kolmelta aamuyöstä
+			auto& ball = static_cast<Pickup&>(*pair.first);
+			auto& goal = static_cast<PlayerGoal&>(*pair.second);
+			std::cout << "PAM " << goal.getIdentifier() << std::endl;
+			goal.setHitpoints(goal.getHitpoints() - 1);
+			std::cout << goal.getIdentifier() << " pelaajaan hp: " << goal.getHitpoints() << std::endl;
+			goal.destroy();
+			ball.setPosition(mWorldView.getCenter);
 		}
 	}
 }

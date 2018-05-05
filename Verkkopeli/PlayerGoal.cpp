@@ -170,10 +170,10 @@ void PlayerGoal::setIdentifier(int identifier)
 void PlayerGoal::updateTexts()
 {
 	// Display hitpoints
-	/*if (isDestroyed())
-	mHealthDisplay->setString("");
-	else
+	//if (isDestroyed())
+	//mHealthDisplay->setString("");
+	//else
 	mHealthDisplay->setString(toString(getHitpoints()) + " HP");
-	mHealthDisplay->setPosition(0.f, 50.f);
-	mHealthDisplay->setRotation(-getRotation());*/
+	mHealthDisplay->setPosition(150.f, 0.f);
+	mHealthDisplay->setRotation(-getRotation());
 }
