@@ -45,6 +45,17 @@ class GameServer
 			std::map<sf::Int32, bool>	realtimeActions;
 		};
 
+		// Structure to store information about ball state
+		struct BallInfo
+		{
+			sf::Vector2f				position;
+		};
+
+		struct GoalInfo
+		{
+			sf::Int32 goalHP;
+		};
+
 		// Unique pointer to remote peers
 		typedef std::unique_ptr<RemotePeer> PeerPtr;
 
@@ -82,6 +93,8 @@ class GameServer
 
 		std::size_t							mPlayerBatCount;
 		std::map<sf::Int32, PlayerInfo>	mPlayerBatInfo;
+		std::map<sf::Int32, GoalInfo>	mGoalInfo;
+		BallInfo	mBallInfo;
 
 		std::vector<PeerPtr>				mPeers;
 		sf::Int32							mPlayerBatIdentifierCounter;

@@ -24,7 +24,7 @@ PlayerGoal::PlayerGoal(Type type, const TextureHolder& textures, const FontHolde
 	, mType(type)
 	, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
 	, mExplosion(textures.get(Textures::Explosion))
-	, mShowExplosion(true)
+	, mShowExplosion(false)
 	, mExplosionBegan(false)
 	, mDirectionIndex(0)
 	, mIdentifier(0)
@@ -45,10 +45,15 @@ PlayerGoal::PlayerGoal(Type type, const TextureHolder& textures, const FontHolde
 
 void PlayerGoal::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	if (isDestroyed() && mShowExplosion)
+	if (isDestroyed() || mShowExplosion)
 		target.draw(mExplosion, states);
 	else
 		target.draw(mSprite, states);
+}
+
+void PlayerGoal::setShowExplosion(bool show)
+{
+	mShowExplosion = show;
 }
 
 void PlayerGoal::updateCurrent(sf::Time dt, CommandQueue& commands)
@@ -56,8 +61,14 @@ void PlayerGoal::updateCurrent(sf::Time dt, CommandQueue& commands)
 	// Update texts and roll animation
 	updateTexts();
 
+	if (mExplosion.isFinished())
+	{
+		setShowExplosion(false);
+		mExplosion.restart();
+	}
+
 	// Entity has been destroyed: Possibly drop pickup, mark for removal
-	if (isDestroyed())
+	if (mShowExplosion)
 	{
 		mExplosion.update(dt);
 
@@ -67,21 +78,6 @@ void PlayerGoal::updateCurrent(sf::Time dt, CommandQueue& commands)
 			// Play sound effect
 			SoundEffect::ID soundEffect = (randomInt(2) == 0) ? SoundEffect::Explosion1 : SoundEffect::Explosion2;
 			playLocalSound(commands, soundEffect);
-
-			// Emit network game action for enemy explosions
-			if (!isAllied())
-			{
-				sf::Vector2f position = getWorldPosition();
-
-				Command command;
-				command.category = Category::Network;
-				command.action = derivedAction<NetworkNode>([position](NetworkNode& node, sf::Time)
-				{
-					node.notifyGameAction(GameActions::EnemyExplode, position);
-				});
-
-				commands.push(command);
-			}
 
 			mExplosionBegan = true;
 		}
@@ -110,10 +106,7 @@ void PlayerGoal::updateCurrent(sf::Time dt, CommandQueue& commands)
 
 unsigned int PlayerGoal::getCategory() const
 {
-	if (isAllied())
-		return Category::PlayerBat;
-	else
-		return Category::EnemyBat;
+	return Category::Goal;
 }
 
 sf::FloatRect PlayerGoal::getBoundingRect() const
@@ -134,7 +127,7 @@ void PlayerGoal::remove()
 
 bool PlayerGoal::isAllied() const
 {
-	return mType == Player1 || mType == Player2;
+	return mType == Goal1 || mType == Goal2;
 }
 
 //float PlayerGoal::getMaxSpeed() const

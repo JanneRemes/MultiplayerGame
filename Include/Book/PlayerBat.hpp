@@ -36,6 +36,8 @@ class PlayerBat : public Entity
 		int						getIdentifier();
 		void					setIdentifier(int identifier);
 
+		Type getType() { return mType; }
+
 	private:
 		virtual void			drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 		virtual void 			updateCurrent(sf::Time dt, CommandQueue& commands);

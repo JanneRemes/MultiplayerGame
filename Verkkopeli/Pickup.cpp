@@ -56,7 +56,7 @@ void Pickup::updateCurrent(sf::Time dt, CommandQueue& commands)
 			|| worldBounds.width <= boundingRect.left + boundingRect.width)
 		{
 			if (-10 < this->getVelocity().x && this->getVelocity().x < 10)
-				this->setVelocity(this->getVelocity().x * -1.1, this->getVelocity().y);
+				this->setVelocity(this->getVelocity().x * -1.25, this->getVelocity().y);
 			else
 				this->setVelocity(this->getVelocity().x * -1.0, this->getVelocity().y);
 		}
@@ -64,7 +64,7 @@ void Pickup::updateCurrent(sf::Time dt, CommandQueue& commands)
 			worldBounds.height <= boundingRect.top + boundingRect.height)
 		{
 			if (-10 < this->getVelocity().y && this->getVelocity().y < 10)
-				this->setVelocity(this->getVelocity().x, this->getVelocity().y * -1.1);
+				this->setVelocity(this->getVelocity().x, this->getVelocity().y * -1.25);
 			else
 				this->setVelocity(this->getVelocity().x, this->getVelocity().y * -1.0);
 		}

@@ -145,7 +145,7 @@ void GameServer::tick()
 {
 	updateClientState();
 
-	// Check for mission success = all planes with position.y < offset
+	// Check for mission success = all bats with position.y < offset
 	bool allPlayerBatsDone = true;
 	FOREACH(auto pair, mPlayerBatInfo)
 	{
@@ -252,7 +252,7 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			receivingPeer.socket.send(requestPacket);
 			mPlayerBatCount++;
 
-			// Inform every other peer about this new plane
+			// Inform every other peer about this new bat
 			FOREACH(PeerPtr& peer, mPeers)
 			{
 				if (peer.get() != &receivingPeer && peer->ready)
@@ -268,6 +268,24 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			mPlayerBatIdentifierCounter++;
 		} break;
 
+		case Client::BallUpdate:
+		{
+			sf::Vector2f ballPosition;
+			packet >> ballPosition.x >> ballPosition.y;
+
+			if (ballPosition.x != 0 && ballPosition.y != 0)
+				mBallInfo.position = ballPosition;
+		} break;
+
+		case Client::GoalUpdate:
+		{
+			sf::Int32 goalHP;
+			sf::Int32 goalID;
+			packet >> goalHP;
+
+			mGoalInfo[goalID].goalHP = goalHP;
+		} break;
+
 		case Client::PositionUpdate:
 		{
 			sf::Int32 numPlayerBats;
@@ -277,8 +295,12 @@ void GameServer::handleIncomingPacket(sf::Packet& packet, RemotePeer& receivingP
 			{
 				sf::Int32 PlayerBatIdentifier;
 				sf::Vector2f PlayerBatPosition;
-				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y;
+				sf::Vector2f ballPosition;
+				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y/* >> ballPosition.x >> ballPosition.y*/;
 				mPlayerBatInfo[PlayerBatIdentifier].position = PlayerBatPosition;
+				
+				/*if (ballPosition.x != 0 && ballPosition.y != 0)
+					mBallInfo.position = ballPosition;*/
 			}
 		} break;
 
@@ -319,6 +341,13 @@ void GameServer::updateClientState()
 		updateClientStatePacket << PlayerBat.first << PlayerBat.second.position.x << PlayerBat.second.position.y;
 
 	sendToAll(updateClientStatePacket);
+
+
+	sf::Packet ballUpdate;
+	ballUpdate << static_cast<sf::Int32>(Server::UpdateClientBallState);
+	ballUpdate << mBallInfo.position.x << mBallInfo.position.y;
+
+	sendToAll(ballUpdate);
 }
 
 void GameServer::handleIncomingConnections()
@@ -328,7 +357,7 @@ void GameServer::handleIncomingConnections()
 
 	if (mListenerSocket.accept(mPeers[mConnectedPlayers]->socket) == sf::TcpListener::Done)
 	{
-		// order the new client to spawn its own plane ( player 1 )
+		// order the new client to spawn its own bat ( player 1 )
 		mPlayerBatInfo[mPlayerBatIdentifierCounter].position = sf::Vector2f(mPlayAreaRect.width / 2, mPlayAreaRect.top + mPlayAreaRect.height / 2);
 
 		sf::Packet packet;
@@ -382,7 +411,7 @@ void GameServer::handleDisconnections()
 				setListening(true);
 			}
 				
-			broadcastMessage("An ally has disconnected.");
+			broadcastMessage("A player has disconnected.");
 		}
 		else
 		{
@@ -405,7 +434,7 @@ void GameServer::informWorldState(sf::TcpSocket& socket)
 		if (mPeers[i]->ready)
 		{
 			FOREACH(sf::Int32 identifier, mPeers[i]->playerBatIdentifiers)
-				packet << identifier << mPlayerBatInfo[identifier].position.x << mPlayerBatInfo[identifier].position.y;
+				packet << identifier << mPlayerBatInfo[identifier].position.x << mPlayerBatInfo[identifier].position.y << mBallInfo.position.x << mBallInfo.position.y;
 		}
 	}
 

@@ -23,6 +23,8 @@ namespace Server
 		SpawnEnemy,
 		SpawnPickup,
 		UpdateClientState,
+		UpdateClientBallState,
+		UpdateClientGoalState,
 		MissionSuccess
 	};
 }
@@ -33,6 +35,8 @@ namespace Client
 	enum PacketType
 	{
 		PlayerEvent,
+		BallUpdate,
+		GoalUpdate,
 		PlayerRealtimeChange,
 		RequestCoopPartner,
 		PositionUpdate,

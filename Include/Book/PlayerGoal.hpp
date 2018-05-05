@@ -16,8 +16,6 @@ class PlayerGoal : public Entity
 public:
 	enum Type
 	{
-		Player1,
-		Player2,
 		Goal1,
 		Goal2,
 		TypeCount
@@ -37,6 +35,9 @@ public:
 	void					playLocalSound(CommandQueue& commands, SoundEffect::ID effect);
 	int						getIdentifier();
 	void					setIdentifier(int identifier);
+
+	void setShowExplosion(bool);
+	Type getType() { return mType; }
 
 private:
 	virtual void			drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;

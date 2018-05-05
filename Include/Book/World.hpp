@@ -49,10 +49,19 @@ public:
 	bool 								hasPlayerReachedEnd() const;
 
 	PlayerBat*							getPlayerBat(int identifier) const;
+	std::vector<PlayerGoal*> getGoals() { return mPlayerGoals; }
 	sf::FloatRect						getBattlefieldBounds() const;
 
 	void								createPickup(sf::Vector2f position, Pickup::Type type);
 	bool								pollGameAction(GameActions::Action& out);
+
+	Pickup*	getBall() 
+	{
+		if (mBall.size() != 0)
+			return mBall.front();
+		else
+			return nullptr;
+	}
 
 private:
 	void								loadTextures();
@@ -106,6 +115,8 @@ private:
 	sf::Vector2f						mSpawnPosition;
 	std::vector<PlayerBat*>				mPlayerBats;
 	std::vector<PlayerGoal*>			mPlayerGoals;
+
+	std::vector<Pickup*> mBall;
 
 	std::vector<SpawnPoint>				mEnemySpawnPoints;
 	std::vector<PlayerBat*>				mActiveEnemies;

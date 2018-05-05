@@ -188,6 +188,8 @@ void World::createPickup(sf::Vector2f position, Pickup::Type type)
 		int r2 = 50;
 		pickup->setVelocity(r1, r2);
 		pickup->setWorldBounds(getViewBounds());
+
+		mBall.push_back(pickup.get());
 		mSceneLayers[UpperAir]->attachChild(std::move(pickup));
 	}
 }
@@ -313,21 +315,43 @@ void World::handleCollisions()
 			auto& ball = static_cast<Pickup&>(*pair.second);
 			if ( ball.getVelocity().x < 5 &&
 				 ball.getVelocity().y < 5)
-				ball.setVelocity(ball.getVelocity().x * 1.1, ball.getVelocity().y * -1.15);
+				ball.setVelocity(ball.getVelocity().x * 1.33, ball.getVelocity().y * -1.5);
 			else
 				ball.setVelocity(ball.getVelocity().x * 1.0, ball.getVelocity().y * -1.0);
 		}
 		else if (matchesCategories(pair, Category::Goal, Category::Pickup))
 		{
-			// TODO
-			//Ajatus ei kulje enää kolmelta aamuyöstä
-			auto& ball = static_cast<Pickup&>(*pair.first);
-			auto& goal = static_cast<PlayerGoal&>(*pair.second);
+			auto& goal = static_cast<PlayerGoal&>(*pair.first);
+			auto& ball = static_cast<Pickup&>(*pair.second);
+
 			std::cout << "PAM " << goal.getIdentifier() << std::endl;
 			goal.setHitpoints(goal.getHitpoints() - 1);
 			std::cout << goal.getIdentifier() << " pelaajaan hp: " << goal.getHitpoints() << std::endl;
-			goal.destroy();
+			goal.setShowExplosion(true);
 			ball.setPosition(mWorldView.getCenter());
+			ball.setVelocity(-50, -50);
+
+			if (goal.getHitpoints() == 0)
+			{
+				if (goal.getType() ==  PlayerGoal::Goal1)
+				for (int i = 0; i < mPlayerBats.size(); ++i)
+				{
+					if (mPlayerBats.at(i)->getType() == PlayerBat::Player1)
+					{
+						mPlayerBats.at(i)->destroy();
+					}
+				}
+				else
+				{
+					for (int i = 0; i < mPlayerBats.size(); ++i)
+					{
+						if (mPlayerBats.at(i)->getType() == PlayerBat::Player2)
+						{
+							mPlayerBats.at(i)->destroy();
+						}
+					}
+				}
+			}
 		}
 	}
 }

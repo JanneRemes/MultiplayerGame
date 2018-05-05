@@ -42,11 +42,11 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	mBroadcastText.setFont(context.fonts->get(Fonts::Main));
 	mBroadcastText.setPosition(1024.f / 2, 100.f);
 
-	mPlayerInvitationText.setFont(context.fonts->get(Fonts::Main));
+	/*mPlayerInvitationText.setFont(context.fonts->get(Fonts::Main));
 	mPlayerInvitationText.setCharacterSize(20);
 	mPlayerInvitationText.setFillColor(sf::Color::White);
 	mPlayerInvitationText.setString("Press Enter to spawn player 2");
-	mPlayerInvitationText.setPosition(1000 - mPlayerInvitationText.getLocalBounds().width, 760 - mPlayerInvitationText.getLocalBounds().height);
+	mPlayerInvitationText.setPosition(1000 - mPlayerInvitationText.getLocalBounds().width, 760 - mPlayerInvitationText.getLocalBounds().height);*/
 
 	// We reuse this text for "Attempt to connect" and "Failed to connect" messages
 	mFailedConnectionText.setFont(context.fonts->get(Fonts::Main));
@@ -130,13 +130,13 @@ bool MultiplayerGameState::update(sf::Time dt)
 		mWorld.update(dt);
 
 		// Remove players whose PlayerBats were destroyed
-		bool foundLocalPlane = false;
+		bool foundLocalPlayer = false;
 		for (auto itr = mPlayers.begin(); itr != mPlayers.end(); )
 		{
 			// Check if there are no more local players for remote clients
 			if (std::find(mLocalPlayerIdentifiers.begin(), mLocalPlayerIdentifiers.end(), itr->first) != mLocalPlayerIdentifiers.end())
 			{
-				foundLocalPlane = true;
+				foundLocalPlayer = true;
 			}
 
 			if (!mWorld.getPlayerBat(itr->first))
@@ -153,7 +153,7 @@ bool MultiplayerGameState::update(sf::Time dt)
 			}
 		}
 
-		if (!foundLocalPlane && mGameStarted)
+		if (!foundLocalPlayer && mGameStarted)
 		{
 			requestStackPush(States::GameOver);
 		}
@@ -197,9 +197,9 @@ bool MultiplayerGameState::update(sf::Time dt)
 		updateBroadcastMessage(dt);
 
 		// Time counter for blinking 2nd player text
-		mPlayerInvitationTime += dt;
+		/*mPlayerInvitationTime += dt;
 		if (mPlayerInvitationTime > sf::seconds(1.f))
-			mPlayerInvitationTime = sf::Time::Zero;
+			mPlayerInvitationTime = sf::Time::Zero;*/
 
 		// Events occurring in the game
 		GameActions::Action gameAction;
@@ -220,14 +220,31 @@ bool MultiplayerGameState::update(sf::Time dt)
 			sf::Packet positionUpdatePacket;
 			positionUpdatePacket << static_cast<sf::Int32>(Client::PositionUpdate);
 			positionUpdatePacket << static_cast<sf::Int32>(mLocalPlayerIdentifiers.size());
-			
+
 			FOREACH(sf::Int32 identifier, mLocalPlayerIdentifiers)
 			{			
 				if (PlayerBat* PlayerBat = mWorld.getPlayerBat(identifier))
 					positionUpdatePacket << identifier << PlayerBat->getPosition().x << PlayerBat->getPosition().y;
+
+
+				/*if (mWorld.getBall())
+				{
+					positionUpdatePacket << mWorld.getBall()->getPosition().x << mWorld.getBall()->getPosition().y;
+				}*/
 			}
 
 			mSocket.send(positionUpdatePacket);
+
+			if (mWorld.getBall())
+			{
+				sf::Packet ballUpdatePacket;
+				ballUpdatePacket << static_cast<sf::Int32>(Client::BallUpdate);
+
+				ballUpdatePacket << mWorld.getBall()->getPosition().x << mWorld.getBall()->getPosition().y;
+
+				mSocket.send(ballUpdatePacket);
+			}
+
 			mTickClock.restart();
 		}
 
@@ -264,16 +281,16 @@ bool MultiplayerGameState::handleEvent(const sf::Event& event)
 	if (event.type == sf::Event::KeyPressed)
 	{
 		// Enter pressed, add second player co-op (only if we are one player)
-		if (event.key.code == sf::Keyboard::Return && mLocalPlayerIdentifiers.size() == 1)
+		/*if (event.key.code == sf::Keyboard::Return && mLocalPlayerIdentifiers.size() == 1)
 		{
 			sf::Packet packet;
 			packet << static_cast<sf::Int32>(Client::RequestCoopPartner);
 
 			mSocket.send(packet);
-		}
+		}*/
 
 		// Escape pressed, trigger the pause screen
-		else if (event.key.code == sf::Keyboard::Escape)
+		if (event.key.code == sf::Keyboard::Escape)
 		{
 			disableAllRealtimeActions();
 			requestStackPush(States::NetworkPause);
@@ -333,7 +350,7 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			}
 		} break;
 
-		// Sent by the server to order to spawn player 1 airplane on connect
+		// Sent by the server to order to spawn player 1 on connect
 		case Server::SpawnSelf:
 		{
 			sf::Int32 PlayerBatIdentifier;
@@ -350,6 +367,12 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 
 			PlayerGoal* playerGoal = mWorld.addPlayerGoal(PlayerGoalIdentifier);
 
+			mWorld.createPickup(sf::Vector2f(512, 364), static_cast<Pickup::Type>(Pickup::Ball));
+			
+			if (mPlayers.size() == 1)
+				mWorld.getBall()->setVelocity(0, 0);
+			else
+				mWorld.getBall()->setVelocity(50, 50);
 			mGameStarted = true;
 		} break;
 
@@ -370,7 +393,8 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			PlayerGoal* playerGoal = mWorld.addPlayerGoal(PlayerGoalIdentifier);
 
 			sf::Vector2f position(mWorld.getBattlefieldBounds().width / 2, mWorld.getBattlefieldBounds().height / 2);
-			mWorld.createPickup(position, static_cast<Pickup::Type>(Pickup::Ball));
+			//mWorld.createPickup(position, static_cast<Pickup::Type>(Pickup::Ball));
+			mWorld.getBall()->setVelocity(50, 50);
 		} break;
 
 		// 
@@ -396,13 +420,18 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			for (sf::Int32 i = 0; i < PlayerBatCount; ++i)
 			{
 				sf::Int32 PlayerBatIdentifier;
-				packet >> PlayerBatIdentifier;;
+				sf::Vector2f playerstartpos;
+				sf::Vector2f ballPos(0, 0);
+				packet >> PlayerBatIdentifier >> playerstartpos.x >> playerstartpos.y >> ballPos.x >> ballPos.y;
 
 				PlayerBatIdentifier = mPlayers.size() + 1;
 				PlayerBat* PlayerBat = mWorld.addPlayerBat(PlayerBatIdentifier);
 				PlayerBat->setHitpoints(1);
 
 				mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, nullptr, mWorld.getPlayerBat(PlayerBatIdentifier)));
+
+				/*mWorld.createPickup(ballPos, static_cast<Pickup::Type>(Pickup::Ball));
+				mWorld.getBall()->setVelocity(0, 0);*/
 			}
 		} break;
 
@@ -412,11 +441,11 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 			sf::Int32 PlayerBatIdentifier;
 			packet >> PlayerBatIdentifier;
 
-			mWorld.addPlayerBat(PlayerBatIdentifier);
+			/*mWorld.addPlayerBat(PlayerBatIdentifier);
 			mPlayers[PlayerBatIdentifier].reset(new Player(&mSocket, PlayerBatIdentifier, getContext().keys2, mWorld.getPlayerBat(PlayerBatIdentifier)));
-			mLocalPlayerIdentifiers.push_back(PlayerBatIdentifier);
+			mLocalPlayerIdentifiers.push_back(PlayerBatIdentifier);*/
 			sf::Vector2f position(mWorld.getBattlefieldBounds().width / 2, mWorld.getBattlefieldBounds().height / 2);
-			mWorld.createPickup(position, static_cast<Pickup::Type>(Pickup::Ball));
+			//mWorld.createPickup(position, static_cast<Pickup::Type>(Pickup::Ball));
 		} break;
 
 		// Player event (like missile fired) occurs
@@ -478,13 +507,23 @@ void MultiplayerGameState::handlePacket(sf::Int32 packetType, sf::Packet& packet
 				packet >> PlayerBatIdentifier >> PlayerBatPosition.x >> PlayerBatPosition.y;
 
 				PlayerBat* PlayerBat = mWorld.getPlayerBat(PlayerBatIdentifier);
-				bool isLocalPlane = std::find(mLocalPlayerIdentifiers.begin(), mLocalPlayerIdentifiers.end(), PlayerBatIdentifier) != mLocalPlayerIdentifiers.end();
-				if (PlayerBat && !isLocalPlane)
+				bool isLocalPlayer = std::find(mLocalPlayerIdentifiers.begin(), mLocalPlayerIdentifiers.end(), PlayerBatIdentifier) != mLocalPlayerIdentifiers.end();
+				if (PlayerBat && !isLocalPlayer)
 				{
 					sf::Vector2f interpolatedPosition = PlayerBat->getPosition() + (PlayerBatPosition - PlayerBat->getPosition()) * 0.1f;
 					PlayerBat->setPosition(interpolatedPosition);
 				}
 			}
+		} break;
+		case Server::UpdateClientBallState:
+		{
+			sf::Vector2f ballPos;
+
+			packet >> ballPos.x >> ballPos.y;
+
+			Pickup* ball = mWorld.getBall();
+			if (ball && (ballPos.x != 0 && ballPos.y != 0))
+				ball->setPosition(ballPos);
 		} break;
 	}
 }
