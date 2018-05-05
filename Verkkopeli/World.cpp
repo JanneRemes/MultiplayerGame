@@ -327,7 +327,7 @@ void World::handleCollisions()
 			goal.setHitpoints(goal.getHitpoints() - 1);
 			std::cout << goal.getIdentifier() << " pelaajaan hp: " << goal.getHitpoints() << std::endl;
 			goal.destroy();
-			ball.setPosition(mWorldView.getCenter);
+			ball.setPosition(mWorldView.getCenter());
 		}
 	}
 }
